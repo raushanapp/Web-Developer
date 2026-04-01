@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+  </head>
+  <body>
+    <form method="get">
+      First Name :
+      <input type="text" placeholder="Enter your name" name="firstname" /><br />
+      Last Name :
+      <input
+        type="text"
+        placeholder="Enter your last name"
+        name="lastname"
+      /><br />
+      Email :<input
+        type="email"
+        placeholder="Enter your email"
+        required
+        name="email"
+      /><br />
+      Password :
+      <input
+        type="password"
+        placeholder="Enter your password"
+        name="password"
+      /><br />
+      Birth Date : <input type="date" name="birthdate" /><br />
+      Gender: <br />
+      <input type="radio" id="male" name="gender" value="male" /> Male <br />
+      <input type="radio" id="female" name="gender" value="female" /> Female
+      <br />
+      <input type="radio" id="other" name="gender" value="other" /> Other <br />
+      Cars :<br />
+      <select name="car" id="car">
+        <option value="volvo" name="volvo">Volvo</option>
+        <option value="audi" name="audi">Audi</option>
+      </select>
+      <input type="submit" value="Register" />
+      <input type="reset" />
+    </form>
+  </body>
+</html>
