@@ -1,0 +1,19 @@
+body {
+  background-image: url(image/background.jpg);
+  background-size: cover;
+}
+
+h2 {
+  color: red;
+  text-align: center;
+  border: 4px solid purple;
+  cursor: pointer;
+  border-radius: 5px;
+}
+p {
+  color: pink;
+}
+li {
+  list-style: none;
+  display: inline-block;
+}
