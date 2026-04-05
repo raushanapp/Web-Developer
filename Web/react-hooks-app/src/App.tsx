@@ -1,23 +1,8 @@
-import { useCallback, useState } from "react";
+// import React from "react";
+import useCount from "./hooks/useCount";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const incrementCount = useCallback(() => {
-    setCount((prev) => {
-      const newValue = prev + 1;
-      console.log("Plus", newValue);
-      return newValue;
-    });
-  }, []);
-
-  const decrementCount = useCallback(() => {
-    setCount((prev) => {
-      const newValue = prev - 1;
-      console.log("Minus", newValue);
-      return newValue;
-    });
-  }, []);
+  const { count, incrementCount, decrementCount } = useCount();
 
   return (
     <div>
