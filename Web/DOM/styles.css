@@ -1,0 +1,12 @@
+#list_items {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.list-item {
+  width: 400px;
+  display: inline-flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px;
+}
