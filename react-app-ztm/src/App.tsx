@@ -1,6 +1,6 @@
-// import React from "react";
 import useCount from "./hooks/useCount";
 import "./App.css";
+import ButtonComponent from "./components/button";
 
 function App() {
   const { count, incrementCount, decrementCount } = useCount();
@@ -9,17 +9,11 @@ function App() {
     <div>
       <h1>React Hooks</h1>
       <div className="app">
-        <button className="btnPlus" onClick={incrementCount}>
-          +
-        </button>
+        <ButtonComponent onClick={incrementCount}>+</ButtonComponent>
         <h1>Count A Number : {count}</h1>
-        <button
-          disabled={count === 0}
-          className="btnMinus"
-          onClick={decrementCount}
-        >
+        <ButtonComponent onClick={decrementCount} disabled={count === 0}>
           &minus;
-        </button>
+        </ButtonComponent>
       </div>
     </div>
   );
