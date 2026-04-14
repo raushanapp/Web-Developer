@@ -1,11 +1,21 @@
-// import React from "react";
+import React from "react";
 import "../App.css";
 import Card from "../components/card";
-import { robots } from "../data";
-const CardList = () => {
+
+interface roboListItem {
+  id: number;
+  name: string;
+  email: string;
+}
+
+interface CardListProps {
+  robos: roboListItem[];
+}
+
+const CardList: React.FC<CardListProps> = ({ robos }) => {
   return (
     <div className="robo-container scroll-hide">
-      {robots?.map((r) => {
+      {robos?.map((r) => {
         return <Card key={r.id} {...r} />;
       })}
     </div>

@@ -1,26 +1,30 @@
 .app {
   display: flex;
-  justify-content: space-around;
+  width: 100%;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 100%;
-  gap: 80px;
-  box-sizing: border-box;
-  padding: 20px;
+  gap: 30px;
 }
 .headers {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
 }
 .robo-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  gap: 40px;
-  padding-bottom: 100px;
+  gap: 30px;
+  padding-bottom: 50px;
 }
-.scroll-hide {
-  overflow-x: hidden;
-  scrollbar-width: none;
+
+h1 {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 2.5rem;
+  font-weight: normal;
+  text-align: center;
+  font-style: normal;
+  color: rgb(82, 136, 136);
 }

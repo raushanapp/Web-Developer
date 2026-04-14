@@ -1,29 +1,37 @@
 import React from "react";
-// import useCount from "./hooks/useCount";
 import "./App.css";
 import CardList from "./pages/card-list";
-// import ButtonComponent from "./components/button";
+import SearchBox from "./components/search-box";
+import { robots } from "./data";
 
-class App extends React.Component {
-  render(): React.ReactNode {
-    // const { count, incrementCount, decrementCount } = useCount();
-    // return (
-    //   <div>
-    //     <div className="app">
-    //       <ButtonComponent onClick={incrementCount}>+</ButtonComponent>
-    //       <h1>Count A Number : {count}</h1>
-    //       <ButtonComponent onClick={decrementCount} disabled={count === 0}>
-    //         &minus;
-    //       </ButtonComponent>
-    //       <h1>Class Components</h1>
-    //     </div>
-    //   </div>
-    // );
+class App extends React.Component<
+  object,
+  { robots: typeof robots; searchField: string }
+> {
+  constructor(props: object) {
+    super(props);
+    this.state = {
+      robots: robots,
+      searchField: "",
+    };
+  }
+
+  onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ searchField: e.target.value });
+  };
+
+  render() {
+    const filteredRobots = this.state.robots.filter((robots) => {
+      return robots.name
+        .toLowerCase()
+        .includes(this.state.searchField.toLowerCase());
+    });
 
     return (
       <div className="app">
-        <h1 className="headers">Classes Components</h1>
-        <CardList />
+        <h1 className="headers">RoboFriends</h1>
+        <SearchBox searchChange={this.onSearchChange} />
+        <CardList robos={filteredRobots} />
       </div>
     );
   }
