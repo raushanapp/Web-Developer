@@ -3,6 +3,7 @@ import "./App.css";
 import CardList from "./pages/card-list";
 import SearchBox from "./components/search-box";
 import { robots } from "./data";
+import Scroll from "./components/scroll";
 
 class App extends React.Component<
   object,
@@ -11,9 +12,18 @@ class App extends React.Component<
   constructor(props: object) {
     super(props);
     this.state = {
-      robots: robots,
+      robots: [],
       searchField: "",
     };
+
+    // console.log("constructor 1"); this run first
+  }
+
+  componentDidMount(): void {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((user) => this.setState({ robots: user }));
+    // console.log("componentDidMount 2"); this run third and repaint the items then runs again render
   }
 
   onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,17 +31,23 @@ class App extends React.Component<
   };
 
   render() {
-    const filteredRobots = this.state.robots.filter((robots) => {
-      return robots.name
-        .toLowerCase()
-        .includes(this.state.searchField.toLowerCase());
+    const { searchField, robots } = this.state;
+
+    const filteredRobots = robots.filter((robot) => {
+      return robot.name.toLowerCase().includes(searchField.toLowerCase());
     });
 
-    return (
+    // console.log("Render 3");  this run second
+
+    return !robots.length ? (
+      <h1>Loading...</h1>
+    ) : (
       <div className="app">
         <h1 className="headers">RoboFriends</h1>
         <SearchBox searchChange={this.onSearchChange} />
-        <CardList robos={filteredRobots} />
+        <Scroll>
+          <CardList robos={filteredRobots} />
+        </Scroll>
       </div>
     );
   }
