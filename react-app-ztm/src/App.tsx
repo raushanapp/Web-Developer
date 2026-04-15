@@ -36,7 +36,6 @@ class App extends React.Component<
     const filteredRobots = robots.filter((robot) => {
       return robot.name.toLowerCase().includes(searchField.toLowerCase());
     });
-
     // console.log("Render 3");  this run second
 
     return !robots.length ? (
