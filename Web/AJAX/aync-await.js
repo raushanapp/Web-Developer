@@ -28,3 +28,15 @@ const movePlayerAsync = async function () {
 };
 
 movePlayerAsync().then((res) => console.log(res));
+
+const getData = async function () {
+  try {
+    const arrayOfPromises = url.map((url) => fetch(url));
+    for await (let request of arrayOfPromises) {
+      const data = await request.json();
+      console.log(data);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
