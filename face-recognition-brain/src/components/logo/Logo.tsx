@@ -22,7 +22,7 @@ const Logo: React.FC = () => {
         options={defaultOptions}
         style={{ height: 100, width: 100 }}
       >
-        <div className="tilt_inner">
+        <div className="tilt_inner padding_till">
           <img className="img_tilt" src={Brain} alt="Brain" />
         </div>
       </Tilt>

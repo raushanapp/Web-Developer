@@ -1,0 +1,11 @@
+.rank_container {
+  align-items: center;
+  flex-direction: column;
+  /* height: 100%; */
+}
+.text_heading,
+.rank_count {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ccc;
+}
