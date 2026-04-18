@@ -1,0 +1,15 @@
+.nav_bar {
+  display: flex;
+  justify-content: flex-end;
+}
+.sign_out_button {
+  font-size: 20px;
+  font-weight: 700;
+  font-style: normal;
+  cursor: pointer;
+  color: tan;
+}
+.sign_out_button:hover {
+  text-decoration: underline;
+  color: #ccc;
+}
