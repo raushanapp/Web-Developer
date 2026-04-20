@@ -8,9 +8,12 @@ import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { Engine } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 import { particlesOptions } from "@/utils/index";
+import FaceRecognition from "@/components/FaceRecognition/FaceRecognition";
 
 type AppState = {
   init: boolean;
+  inputUrl: string;
+  imageUrl: string;
 };
 
 class App extends Component<object, AppState> {
@@ -18,6 +21,8 @@ class App extends Component<object, AppState> {
     super(props);
     this.state = {
       init: false,
+      inputUrl: "",
+      imageUrl: "",
     };
   }
 
@@ -29,10 +34,20 @@ class App extends Component<object, AppState> {
     this.setState({ init: true });
   }
 
+  onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
+    this.setState({ inputUrl: event.target.value });
+  };
+
+  onButtonSubmit = () => {
+    this.setState({ imageUrl: this.state.inputUrl });
+    //  we need to work here clarifai packge to
+  };
+
   // particlesLoaded = async (container?: Container): Promise<void> => {};
 
   render(): React.ReactNode {
-    const { init } = this.state;
+    const { init, inputUrl, imageUrl } = this.state;
     return (
       <div className="App center">
         {init && (
@@ -46,8 +61,11 @@ class App extends Component<object, AppState> {
         <Navigation />
         <Logo />
         <Rank />
-        <ImageLinkForm />
-        {/* <FaceRecognition/> */}
+        <ImageLinkForm
+          onInputChange={this.onInputChange}
+          onSubmit={this.onButtonSubmit}
+        />
+        <FaceRecognition imageUrl={imageUrl} />
       </div>
     );
   }

@@ -1,7 +1,15 @@
 import React from "react";
 import "@/components/ImageLinkForm/image_link_form.style.css";
 
-const ImageLinkForm: React.FC = () => {
+interface ImageLinkFormsProps {
+  onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: () => void;
+}
+
+const ImageLinkForm: React.FC<ImageLinkFormsProps> = ({
+  onInputChange,
+  onSubmit,
+}) => {
   return (
     <div className="image_link_form_container">
       <p className="text_title">
@@ -12,8 +20,11 @@ const ImageLinkForm: React.FC = () => {
           type="text"
           placeholder="Enter image URL"
           className="text_input"
+          onChange={onInputChange}
         />
-        <button className="btn">Detect Faces</button>
+        <button className="btn" onClick={onSubmit}>
+          Detect Faces
+        </button>
       </div>
     </div>
   );
