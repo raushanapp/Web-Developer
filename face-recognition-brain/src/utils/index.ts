@@ -60,8 +60,17 @@ export const particlesOptions: ISourceOptions = {
     opacity: {
       value: 0.5,
     },
+    // shape: {
+    //   type: "triangles",
+    //   //   type: "Triangles",
+    // },
     shape: {
-      type: "Triangles",
+      type: "polygon",
+      options: {
+        polygon: {
+          sides: 6,
+        },
+      },
     },
     size: {
       value: { min: 1, max: 5 },
