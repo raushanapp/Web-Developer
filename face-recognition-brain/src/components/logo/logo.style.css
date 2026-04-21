@@ -1,0 +1,30 @@
+.logo_container {
+  margin-top: 0;
+  margin-left: 10px;
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+}
+.tilt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(
+    90deg,
+    rgb(0, 0, 0) 0%,
+    rgb(0, 0, 0) 50%,
+    rgb(0, 39, 18) 100%
+  );
+  /* border: 1px solid #ccc; */
+  border-radius: 60px;
+}
+
+.tilt_inner,
+.img_tilt {
+  width: 60px;
+  height: 60px;
+}
+.padding_till {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
