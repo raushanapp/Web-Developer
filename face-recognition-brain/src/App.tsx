@@ -10,12 +10,15 @@ import { loadSlim } from "@tsparticles/slim";
 import { particlesOptions } from "@/utils/index";
 import FaceRecognition from "@/components/FaceRecognition/FaceRecognition";
 import SignIn from "@/components/SignIn/SignIn";
+import Register from "@/components/Register/Register";
+
+export type Route = "signin" | "register" | "home" | "signout";
 
 type AppState = {
   init: boolean;
   inputUrl: string;
   imageUrl: string;
-  route: string;
+  route: Route;
   box: object;
   isSignedIn: boolean;
 };
@@ -55,13 +58,15 @@ class App extends Component<object, AppState> {
     this.setState({ isSignedIn: false, route: "signin" });
   };
 
-  onChangeRoute = (route: string) => {
+  onChangeRoute = (route: Route) => {
     if (route === "signout") {
       this.onSignOut();
     } else if (route === "home") {
       this.setState({ isSignedIn: true, route: "home" });
+    } else {
+      console.log(route);
+      this.setState({ route: route });
     }
-    this.setState({ route: route });
   };
 
   // particlesLoaded = async (container?: Container): Promise<void> => {};
@@ -91,8 +96,11 @@ class App extends Component<object, AppState> {
           </>
         ) : (
           <>
-            <SignIn />
-            {/* <Register/> */}
+            {route === "signin" ? (
+              <SignIn onChangeRoute={this.onChangeRoute} />
+            ) : (
+              <Register onChangeRoute={this.onChangeRoute} />
+            )}
           </>
         )}
       </div>

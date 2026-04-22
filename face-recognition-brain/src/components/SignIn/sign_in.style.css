@@ -1,5 +1,5 @@
 .sign_in_container {
-  width: 50%;
+  width: 40%;
   padding: 20px;
   justify-content: space-between;
   align-items: center;
@@ -77,4 +77,14 @@
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
+}
+
+.bottom_title {
+  font-size: 16px;
+  font-weight: 600;
+  font-style: normal;
+  color: #ccc;
+}
+.pointer_text {
+  cursor: pointer;
 }
