@@ -1,0 +1,13 @@
+{
+  "name": "rest_api",
+  "packageManager": "yarn@4.9.2",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
