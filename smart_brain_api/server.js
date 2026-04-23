@@ -54,7 +54,7 @@ app.post("/register", (req, res) => {
     name,
     email,
     password,
-    entries: 1++,
+    entries: 0,
     joined: new Date(),
   });
 

@@ -1,10 +1,11 @@
 import React from "react";
 import "@/components/SignIn/sign_in.style.css";
 import "@/components/Register/register.style.css";
-import type { Route } from "@/App";
+import type { Route, UserProps } from "@/App";
 
 interface RegisterProps {
   onChangeRoute: (route: Route) => void;
+  loadUser: (user: UserProps) => void;
 }
 
 type RegisterState = {
@@ -46,12 +47,12 @@ class Register extends React.Component<RegisterProps, RegisterState> {
       body: JSON.stringify(this.state),
     })
       .then((response) => response.json())
-      .then((data) => {
-        if (data.message === "User registered successfully") {
+      .then((user) => {
+        if (user.message === "User registered successfully") {
           this.setState({ isLoading: false });
-          this.props.onChangeRoute("signin");
+          this.props.loadUser(user.users);
+          this.props.onChangeRoute("home");
         }
-        console.log(data);
       });
   };
 
@@ -61,9 +62,13 @@ class Register extends React.Component<RegisterProps, RegisterState> {
     return (
       <div className="Register_container">
         <h3 className="header_title">Register</h3>
-        <form action="submit" className="form_container">
+        <form
+          onSubmit={this.onSubmit}
+          action="submit"
+          className="form_container"
+        >
           <div className="input_div">
-            <label className="email_address" htmlFor="user_name">
+            <label className="email_address" htmlFor="name">
               User Name
             </label>
             <input
