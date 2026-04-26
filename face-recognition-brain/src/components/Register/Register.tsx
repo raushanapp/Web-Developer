@@ -38,13 +38,18 @@ class Register extends React.Component<RegisterProps, RegisterState> {
   onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     this.setState({ isLoading: true });
+    const payload = {
+      name: this.state.user_name,
+      email: this.state.email,
+      //   password: this.state.password
+    };
     // Handle form submission logic here
     fetch("http://localhost:3000/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.state),
+      body: JSON.stringify(payload),
     })
       .then((response) => response.json())
       .then((user) => {
@@ -64,7 +69,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         <h3 className="header_title">Register</h3>
         <form
           onSubmit={this.onSubmit}
-          action="submit"
+          //   action="submit"
           className="form_container"
         >
           <div className="input_div">
