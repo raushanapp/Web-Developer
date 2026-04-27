@@ -1,0 +1,9 @@
+.Register_container {
+  width: 40%;
+  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: 2px 4px 10px #888888;
+  border-radius: 10px;
+}

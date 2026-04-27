@@ -10,8 +10,12 @@
   font-style: normal;
   cursor: pointer;
   color: tan;
+  background: transparent;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
 }
 .sign_out_button:hover {
-  text-decoration: underline;
-  color: #ccc;
+  /* text-decoration: underline;
+  color: #ccc; */
 }

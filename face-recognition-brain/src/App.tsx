@@ -9,11 +9,27 @@ import type { Engine } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 import { particlesOptions } from "@/utils/index";
 import FaceRecognition from "@/components/FaceRecognition/FaceRecognition";
+import SignIn from "@/components/SignIn/SignIn";
+import Register from "@/components/Register/Register";
+
+export type Route = "signin" | "register" | "home" | "signout";
+
+export interface UserProps {
+  id: string;
+  name: string;
+  email: string;
+  entries: number;
+  joined: string;
+}
 
 type AppState = {
   init: boolean;
   inputUrl: string;
   imageUrl: string;
+  route: Route;
+  box: object;
+  isSignedIn: boolean;
+  user: UserProps;
 };
 
 class App extends Component<object, AppState> {
@@ -23,6 +39,16 @@ class App extends Component<object, AppState> {
       init: false,
       inputUrl: "",
       imageUrl: "",
+      route: "signin",
+      box: {},
+      isSignedIn: false,
+      user: {
+        id: "",
+        name: "",
+        email: "",
+        entries: 0,
+        joined: "",
+      },
     };
   }
 
@@ -44,10 +70,29 @@ class App extends Component<object, AppState> {
     //  we need to work here clarifai packge to
   };
 
+  onSignOut = () => {
+    this.setState({ isSignedIn: false, route: "signin" });
+  };
+
+  onLoadUser = (user: UserProps) => {
+    this.setState({ user: user });
+  };
+
+  onChangeRoute = (route: Route) => {
+    if (route === "signout") {
+      this.onSignOut();
+    } else if (route === "home") {
+      this.setState({ isSignedIn: true, route: "home" });
+    } else {
+      console.log(route);
+      this.setState({ route: route });
+    }
+  };
+
   // particlesLoaded = async (container?: Container): Promise<void> => {};
 
   render(): React.ReactNode {
-    const { init, inputUrl, imageUrl } = this.state;
+    const { init, imageUrl, isSignedIn, route, user } = this.state;
     return (
       <div className="App center">
         {init && (
@@ -58,14 +103,29 @@ class App extends Component<object, AppState> {
             options={particlesOptions}
           />
         )}
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageLinkForm
-          onInputChange={this.onInputChange}
-          onSubmit={this.onButtonSubmit}
-        />
-        <FaceRecognition imageUrl={imageUrl} />
+        <Navigation isLoggedIn={isSignedIn} onSignOut={this.onSignOut} />
+        {route === "home" ? (
+          <>
+            <Logo />
+            <Rank name={user.name} rank={user.entries} />
+            <ImageLinkForm
+              onInputChange={this.onInputChange}
+              onSubmit={this.onButtonSubmit}
+            />
+            <FaceRecognition imageUrl={imageUrl} />
+          </>
+        ) : (
+          <>
+            {route === "signin" ? (
+              <SignIn onChangeRoute={this.onChangeRoute} />
+            ) : (
+              <Register
+                loadUser={this.onLoadUser}
+                onChangeRoute={this.onChangeRoute}
+              />
+            )}
+          </>
+        )}
       </div>
     );
   }
