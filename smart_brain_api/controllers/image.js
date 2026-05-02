@@ -1,22 +1,47 @@
-const Clarifai = require("clarifai-nodejs-grpc");
 const dotenv = require("dotenv");
 dotenv.config();
 
-// const app = new Clarifai.App({
-//   apiKey: process.env.CLARIFAI_API_KEY,
-// });
-const workflowUrl = "https://clarifai.com/clarifai/main/workflows/Face";
-
-const app = new Clarifai.App({
-  authConfig: {
-    pat: process.env.CLARIFAI_PAT,
-    appId: process.env.CLARIFAI_APP_ID,
-    userId: process.env.CLARIFAI_USER_ID,
-  },
-});
 const handleApiCall = async (req, res) => {
-  const facedetection = await app.model();
-  console.log(facedetection);
+  try {
+    const response = await fetch(
+      "https://api.clarifai.com/v2/models/face-detection/outputs",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Key ${process.env.CLARIFAI_PAT}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_app_id: {
+            user_id: "clarifai",
+            app_id: "main",
+          },
+          inputs: [
+            {
+              data: {
+                image: {
+                  url: req.body.input,
+                },
+              },
+            },
+          ],
+        }),
+      },
+    );
+
+    const data = await response.json();
+
+    // optional: check for API-level error
+    if (data.status?.code !== 10000) {
+      console.log(data.status);
+      return res.status(400).json("Clarifai API error");
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json("Error detecting face");
+  }
 };
 
 const handleImage = (req, res, db) => {
