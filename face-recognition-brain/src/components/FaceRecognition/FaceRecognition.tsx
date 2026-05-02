@@ -8,7 +8,7 @@ interface FaceRecognitionProps {
 const FaceRecognition: React.FC<FaceRecognitionProps> = ({ imageUrl }) => {
   return (
     <div className="face_recognition_container center">
-      <img src={imageUrl} alt="delect_images" />
+      {imageUrl && <img src={imageUrl} alt="detected_images" />}
     </div>
   );
 };

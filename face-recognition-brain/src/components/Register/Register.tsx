@@ -3,7 +3,7 @@ import "@/components/SignIn/sign_in.style.css";
 import "@/components/Register/register.style.css";
 import type { Route, UserProps } from "@/App";
 
-interface RegisterProps {
+export interface RegisterProps {
   onChangeRoute: (route: Route) => void;
   loadUser: (user: UserProps) => void;
 }
@@ -37,11 +37,15 @@ class Register extends React.Component<RegisterProps, RegisterState> {
   };
   onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const { user_name, email, password } = this.state;
+    if (!user_name || !email || !password) {
+      return;
+    }
     this.setState({ isLoading: true });
     const payload = {
-      name: this.state.user_name,
-      email: this.state.email,
-      //   password: this.state.password
+      name: user_name,
+      email: email,
+      password: password,
     };
     // Handle form submission logic here
     fetch("http://localhost:3000/register", {
@@ -53,11 +57,19 @@ class Register extends React.Component<RegisterProps, RegisterState> {
     })
       .then((response) => response.json())
       .then((user) => {
-        if (user.message === "User registered successfully") {
+        console.log(user);
+        if (
+          user.message === "User registered successfully" ||
+          user?.user.id !== undefined
+        ) {
           this.setState({ isLoading: false });
-          this.props.loadUser(user.users);
+          this.props.loadUser(user?.user);
           this.props.onChangeRoute("home");
         }
+      })
+      .catch((error) => {
+        console.error("Error registering user:", error);
+        this.setState({ isLoading: false });
       });
   };
 
