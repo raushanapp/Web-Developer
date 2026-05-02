@@ -8,7 +8,6 @@ dotenv.config();
 const workflowUrl = "https://clarifai.com/clarifai/main/workflows/Face";
 
 const app = new Clarifai.App({
-  // workflowId: workflowUrl,
   authConfig: {
     pat: process.env.CLARIFAI_PAT,
     appId: process.env.CLARIFAI_APP_ID,
@@ -16,11 +15,6 @@ const app = new Clarifai.App({
   },
 });
 const handleApiCall = async (req, res) => {
-  // const facedetection = await app.predict({
-  //   inputs: req.body.input,
-  //   workflowId: workflowUrl,
-  // });
-
   const facedetection = await app.model();
   console.log(facedetection);
 };
