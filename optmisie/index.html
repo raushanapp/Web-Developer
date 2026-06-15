@@ -1,0 +1,42 @@
+<!-- 
+  #1 Load <Style>  in <head>
+  #2 Load <Script right before  <body>
+
+ CSS 
+   #3 Load only what is needed
+   #4 above the fold loading
+   #5 Less specificity
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Critical Render Path</title>
+
+    <!--  External CSS -->
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="styles.css" />
+
+    <!--  #5 download in the background and not disrupt the page load if screen does not match   -->
+
+    <!--  Internal css - Pro: Allows us to not have to request css file  -->
+  </head>
+  <body>
+    <h1>Load Fast</h1>
+    <button>Click Me</button>
+
+    <!--  #4 Above the fold loading -->
+    <h2 class="important">Important above the fold content</h2>
+
+    <h2 class="secondary">
+      Below the fold content. You wont see this until after page loads
+    </h2>
+
+    <!-- #2 Render blocking and parser blocking  JS -->
+
+    <script>
+      //   alert("Hello, World!");
+    </script>
+  </body>
+</html>
