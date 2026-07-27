@@ -1,40 +1,81 @@
-// const listElement = document.getElementById("list");
-// const newListItem = document.createElement("li");
-// newListItem.textContent = "Item 4";
-
-// setTimeout(() => listElement.appendChild(newListItem), 1000);
-//  this is imperative programming
-const countElement = document.getElementById("count");
-
-function setCount() {
-  let count = Number(countElement.textContent);
-  //   count++;
-  count = count + 1;
-  countElement.textContent = count;
-}
-
-//  imperative programming here i am telling the browser what to do
-
-const countApp = {
-  getCount: () => {
-    const countElement = document.getElementById("count");
-    return Number(countElement.textContent);
-  },
-
-  setCount: (val) => {
-    const countElement = document.getElementById("count");
-    countElement.textContent = val;
-  },
+//  Virtual DOM
+let markup = {
+  type: "article",
+  children: [
+    {
+      type: "h2",
+      children: [
+        {
+          type: "text",
+          value: "Counter",
+        },
+      ],
+    },
+    {
+      type: "h3",
+      children: [
+        {
+          type: "text",
+          value: "This Works",
+        },
+      ],
+    },
+    {
+      type: "p",
+      children: [
+        {
+          type: "text",
+          value: "Counter",
+        },
+        {
+          type: "strong",
+          children: [
+            {
+              type: "em",
+              children: [
+                {
+                  type: "text",
+                  value: "1",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "text",
+          value: "times",
+        },
+      ],
+    },
+    {
+      type: "button",
+      children: [
+        {
+          type: "text",
+          value: "Click me",
+        },
+      ],
+    },
+  ],
 };
 
-//  this code have declarative approach
+console.log(markup);
 
-function setCount1() {
-  let count = countApp.getCount();
+const main = document.getElementById("app");
 
-  if (count >= 5) {
-    countApp.setCount(0);
-  } else {
-    countApp.setCount(count + 1);
+function addElements(pojoElement, parentDOMNode) {
+  let newDOMNode =
+    pojoElement.type === "text"
+      ? document.createTextNode(pojoElement.value)
+      : document.createElement(pojoElement.type);
+  if (pojoElement.children) {
+    pojoElement.children.forEach((child) => {
+      addElements(child, newDOMNode);
+    });
   }
+
+  console.log(parentDOMNode);
+  parentDOMNode.appendChild(newDOMNode);
 }
+
+addElements(markup, main);
