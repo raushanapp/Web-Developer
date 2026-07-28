@@ -87,7 +87,7 @@ const root = ReactDOM.createRoot(rootNode);
 
 root.render(React.createElement(App));
 
-console.log(React);
+// console.log(React);
 
 function App() {
   //   console.log("App component rendered");
@@ -112,8 +112,8 @@ function App() {
 let articleElements = document.getElementsByTagName("article");
 let articleElement = document.getElementsByTagName("article").item(0);
 
-console.log(articleElements);
-console.log(articleElement);
+// console.log(articleElements);
+// console.log(articleElement);
 
 //  after React its work
 //  but this example show the difference because engine here available and run this code because setTimeout of browser API
