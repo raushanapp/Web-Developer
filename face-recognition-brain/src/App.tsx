@@ -32,24 +32,26 @@ type AppState = {
   user: UserProps;
 };
 
+const intitalState: AppState = {
+  init: false,
+  inputUrl: "",
+  imageUrl: "",
+  route: "signin",
+  box: {},
+  isSignedIn: false,
+  user: {
+    id: "",
+    name: "",
+    email: "",
+    entries: 0,
+    joined: "",
+  },
+};
+
 class App extends Component<object, AppState> {
   constructor(props: object) {
     super(props);
-    this.state = {
-      init: false,
-      inputUrl: "",
-      imageUrl: "",
-      route: "signin",
-      box: {},
-      isSignedIn: false,
-      user: {
-        id: "",
-        name: "",
-        email: "",
-        entries: 0,
-        joined: "",
-      },
-    };
+    this.state = intitalState;
   }
 
   async componentDidMount() {
@@ -67,7 +69,37 @@ class App extends Component<object, AppState> {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.inputUrl });
-    //  we need to work here clarifai packge to
+    fetch("http://localhost:3000/imageurl", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        input: this.state.inputUrl,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("DATA", data);
+        if (data) {
+          fetch("http://localhost:3000/image", {
+            method: "put",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: this.state.user.id,
+            }),
+          })
+            .then((response) => response.json())
+            .then((count) => {
+              this.setState({ user: { ...this.state.user, entries: count } });
+            });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   onSignOut = () => {
@@ -75,12 +107,14 @@ class App extends Component<object, AppState> {
   };
 
   onLoadUser = (user: UserProps) => {
+    console.log(user);
     this.setState({ user: user });
   };
 
   onChangeRoute = (route: Route) => {
     if (route === "signout") {
       this.onSignOut();
+      this.setState(intitalState);
     } else if (route === "home") {
       this.setState({ isSignedIn: true, route: "home" });
     } else {
@@ -117,7 +151,10 @@ class App extends Component<object, AppState> {
         ) : (
           <>
             {route === "signin" ? (
-              <SignIn onChangeRoute={this.onChangeRoute} />
+              <SignIn
+                loadUser={this.onLoadUser}
+                onChangeRoute={this.onChangeRoute}
+              />
             ) : (
               <Register
                 loadUser={this.onLoadUser}

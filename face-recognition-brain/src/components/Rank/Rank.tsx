@@ -6,10 +6,11 @@ interface RankProps {
   name: string;
 }
 const Rank: React.FC<RankProps> = ({ rank, name }) => {
+  console.log(rank, name);
   return (
     <div className="rank_container center">
       <p className="text_heading">{name} your Rank is </p>
-      <p className="rank_count">#{rank}</p>
+      <p className="rank_count"># {rank}</p>
     </div>
   );
 };

@@ -1,0 +1,15 @@
+h1 {
+  color: red;
+}
+
+/*  bad  */
+/*  when it's go into the browsers calcualting styles to how render this and is bad way to writte css */
+.header .nav .item .link a.impotant {
+  color: teal;
+}
+
+/*  good  */
+
+a.important {
+  color: teal;
+}

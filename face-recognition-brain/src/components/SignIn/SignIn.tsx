@@ -1,10 +1,6 @@
 import React from "react";
 import "@/components/SignIn/sign_in.style.css";
-import type { Route } from "@/App";
-
-type SignInProps = {
-  onChangeRoute: (route: Route) => void;
-};
+import type { RegisterProps } from "@/components/Register/Register";
 
 type SignInState = {
   email: string;
@@ -12,8 +8,8 @@ type SignInState = {
   isLoading: boolean;
 };
 
-class SignIn extends React.Component<SignInProps, SignInState> {
-  constructor(props: SignInProps) {
+class SignIn extends React.Component<RegisterProps, SignInState> {
+  constructor(props: RegisterProps) {
     super(props);
     this.state = {
       email: "",
@@ -32,21 +28,37 @@ class SignIn extends React.Component<SignInProps, SignInState> {
 
   onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const { email, password } = this.state;
+    if (!email || !password) {
+      return;
+    }
     this.setState({ isLoading: true });
+    const payload = {
+      email,
+      password,
+    };
 
     fetch("http://localhost:3000/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(this.state),
+      body: JSON.stringify(payload),
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.message === "Signin successful") {
+        if (
+          data.message === "Signin successful" ||
+          data?.user.id !== undefined
+        ) {
           this.setState({ isLoading: false });
+          this.props.loadUser(data?.user);
           this.props.onChangeRoute("home");
         }
+      })
+      .catch((error) => {
+        console.error("Error signing in:", error);
+        this.setState({ isLoading: false });
       });
   };
 

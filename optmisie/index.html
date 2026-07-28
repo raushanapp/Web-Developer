@@ -1,0 +1,84 @@
+<!-- 
+  #1 Load <Style>  in <head>
+  #2 Load <Script right before  <body>
+
+ CSS 
+   #3 Load only what is needed
+   #4 above the fold loading
+   #5 Less specificity
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Critical Render Path</title>
+
+    <!--  External CSS -->
+    <link rel="stylesheet" href="index.css" media="all" />
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+
+    <!--  #5 download in the background and not disrupt the page load if screen does not match   -->
+    <link
+      rel="stylesheet"
+      href="style1.css"
+      media="only screen and (max-width: 500px)"
+    />
+
+    <!--  Internal css - Pro: Allows us to not have to request css file  -->
+    <style>
+      h1 {
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Load Fast</h1>
+    <button>Click Me</button>
+
+    <img
+      src="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L25zODIzMC1pbWFnZS5qcGc.jpg"
+      alt=""
+      width="800px"
+      height="800px"
+      sizes="cover"
+    />
+
+    <!--  #4 Above the fold loading -->
+    <h2 class="important">Important above the fold content</h2>
+
+    <h2 class="secondary">
+      Below the fold content. You wont see this until after page loads
+    </h2>
+
+    <!-- #2 Render blocking and parser blocking  JS -->
+    <script>
+      var button = document.querySelector("button");
+      button.style.color = "red";
+    </script>
+    <script src="./script.js"></script>
+    <script src="./script1.js" async></script>
+    <script src="./script2.js"></script>
+
+    <!-- <script type="text/javascript">
+      //   alert("Hello, World!");
+
+      const loadStyleSheet = (src) => {
+        if (document.createStyleSheet) {
+          document.createStyleSheet(src);
+        } else {
+          const styleSheet = document.createElement("link");
+          styleSheet.href = src;
+          styleSheet.type = "text/css";
+          styleSheet.rel = "stylesheet";
+          document.getElementsByTagName("head")[0].appendChild(styleSheet);
+        }
+      };
+
+      window.onload = () => {
+        console.log("Window done!");
+        loadStyleSheet("./styles.css");
+      };
+    </script> -->
+  </body>
+</html>
