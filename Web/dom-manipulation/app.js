@@ -124,3 +124,27 @@ setTimeout(() => {
   console.log(articleElements);
   console.log(articleElement);
 }, 1000);
+
+//  Pure function as  always return the same output for the same input
+
+let counter = { name: "Counter" };
+
+let countValue = 1;
+
+function pureCounter(ctr, value) {
+  return `${ctr.name}: ${value}`;
+}
+
+function notPureCounter(ctr, value) {
+  ctr.name = ctr.name + " Tony!";
+  countValue = countValue + 1;
+  return `${ctr.name}: ${value}`;
+}
+
+console.log(pureCounter(counter, countValue));
+console.log(pureCounter(counter, countValue + 1));
+console.log(pureCounter(counter, countValue));
+
+console.log(notPureCounter(counter, countValue));
+console.log(notPureCounter(counter, countValue + 1));
+console.log(counter);
