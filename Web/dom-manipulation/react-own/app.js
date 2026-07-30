@@ -11,44 +11,46 @@ function App() {
     React.createElement(
       "section",
       null,
-      counterName === "One"
-        ? React.createElement(Counter, { name: counterName })
-        : React.createElement(Counter2, { name: counterName }),
-      // React.createElement(Counter, { name: "two" }),
+      // counterName === "One"
+      //   ? React.createElement(Counter, { name: counterName })
+      //   : React.createElement(Counter2, { name: counterName }),
+      React.createElement(Counter, null),
     ),
   );
 }
 
 // function Counter({ name }) {
-function Counter(props) {
+function Counter() {
   //  here you can not modify props directly
-  props.name = "Three";
+  // props.name = "Three";
   return React.createElement(
     "article",
     null,
-    React.createElement("h2", null, "Counter", " ", props.name),
+    React.createElement("h2", null, "Counter"),
     React.createElement("p", null, "You clicked 1 times"),
-    React.createElement("button", null, "Click me"),
+    React.createElement("button", { className: "button" }, "Click me"),
   );
 }
 
 //  Template Logic
 
-function Counter2({ name }) {
-  //  you can modify local variables if you are not using the props directly
-  // name = "Three";
+// function Counter2({ name }) {
+//  you can modify local variables if you are not using the props directly
+// name = "Three";
 
-  return React.createElement(
-    "article",
-    null,
-    React.createElement("h2", null, "Counter", " ", name),
-    React.createElement("p", null, "You clicked 1 times"),
-    React.createElement("button", null, "Click me"),
-  );
-}
+// return React.createElement(
+//   "article",
+//   null,
+//   React.createElement("h2", null, "Counter", " ", name),
+//   React.createElement("p", null, "You clicked 1 times"),
+//   React.createElement("button", null, "Click me"),
+// );
+// }
 
-function rerender() {
-  console.log("Rerender...");
-  counterName = "Two";
-  root.render(React.createElement(App));
-}
+// function rerender() {
+//   console.log("Rerender...");
+//   counterName = "Two";
+//   root.render(React.createElement(App));
+// }
+
+// rootNode.className = "root";  this doing imperative way because i am modifying the DOM directly
