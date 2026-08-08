@@ -2,7 +2,7 @@ const rootNode = document.getElementById("app");
 const root = ReactDOM.createRoot(rootNode);
 
 console.log("===>>>", root);
-const counterName = "One";
+let counterName = "One";
 // root.render(React.createElement(App));
 root.render(<App />);
 
@@ -13,6 +13,7 @@ function App() {
     <>
       <h1>Counters</h1>
       <section>{counterName === "One" ? counterOne : counterTwo}</section>
+      <button onClick={rerender}>Rerender</button>
     </>
   );
 }
