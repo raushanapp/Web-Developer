@@ -31678,6 +31678,8 @@
       // opportunity to paint.
 
       requestPaint();
+
+      console.log("Execution Context : ", executionContext);
       executionContext = prevExecutionContext; // Reset the priority to the previous non-sync value.
 
       setCurrentUpdatePriority(previousPriority);
