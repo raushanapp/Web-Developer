@@ -31378,6 +31378,7 @@
     var current = unitOfWork.alternate;
     setCurrentFiber(unitOfWork);
     var next;
+    console.log("Performing unit of work....");
 
     if ((unitOfWork.mode & ProfileMode) !== NoMode) {
       startProfilerTimer(unitOfWork);
