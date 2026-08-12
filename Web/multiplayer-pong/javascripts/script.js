@@ -1,7 +1,8 @@
 //  Canvas Related code
-
 const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d");
+const socket = io("http://localhost:3000");
+
 let paddleIndex = 0;
 
 let width = 500;
@@ -27,7 +28,7 @@ let ballDirection = 1;
 
 let speedY = 2;
 let speedX = 0;
-let computerSpeed = 4;
+// let computerSpeed = 4;  no gone use this because we are using socket.io
 
 //  score for Both players
 
@@ -44,16 +45,16 @@ function createCanvas() {
 }
 
 // Wait for Opponents
-// function renderIntro() {
-//   // Canvas Background
-//   context.fillStyle = 'black';
-//   context.fillRect(0, 0, width, height);
+function renderIntro() {
+  // Canvas Background
+  context.fillStyle = "black";
+  context.fillRect(0, 0, width, height);
 
-//   // Intro Text
-//   context.fillStyle = 'white';
-//   context.font = "32px Courier New";
-//   context.fillText("Waiting for opponent...", 20, (canvas.height / 2) - 30);
-// }
+  // Intro Text
+  context.fillStyle = "white";
+  context.font = "32px Courier New";
+  context.fillText("Waiting for opponent...", 20, canvas.height / 2 - 30);
+}
 
 // Render Everything on Canvas
 
@@ -138,6 +139,7 @@ function ballBoundaries() {
       score[1]++;
     }
   }
+
   // Bounce off computer paddle (top)
   if (ballY < paddleDiff) {
     if (ballX >= paddleX[1] && ballX <= paddleX[1] + paddleWidth) {
@@ -154,9 +156,9 @@ function ballBoundaries() {
       speedX = trajectoryX[1] * 0.3;
     } else {
       // Reset Ball, Increase Computer Difficulty, add to Player Score
-      if (computerSpeed < 6) {
-        computerSpeed += 0.5;
-      }
+      // if (computerSpeed < 6) {
+      //   computerSpeed += 0.5;
+      // }
       ballReset();
       score[0]++;
     }
@@ -164,24 +166,24 @@ function ballBoundaries() {
 }
 
 // Computer Movement
-function computerAI() {
-  if (playerMoved) {
-    if (paddleX[1] + paddleDiff < ballX) {
-      paddleX[1] += computerSpeed;
-    } else {
-      paddleX[1] -= computerSpeed;
-    }
-    if (paddleX[1] < 0) {
-      paddleX[1] = 0;
-    } else if (paddleX[1] > width - paddleWidth) {
-      paddleX[1] = width - paddleWidth;
-    }
-  }
-}
+// function computerAI() {
+//   if (playerMoved) {
+//     if (paddleX[1] + paddleDiff < ballX) {
+//       paddleX[1] += computerSpeed;
+//     } else {
+//       paddleX[1] -= computerSpeed;
+//     }
+//     if (paddleX[1] < 0) {
+//       paddleX[1] = 0;
+//     } else if (paddleX[1] > width - paddleWidth) {
+//       paddleX[1] = width - paddleWidth;
+//     }
+//   }
+// }
 
 // Called Every Frame
 function animate() {
-  computerAI();
+  // computerAI();
   ballMove();
   renderCanvas();
   ballBoundaries();
@@ -191,7 +193,9 @@ function animate() {
 // Start Game, Reset Everything
 function startGame() {
   createCanvas();
-  // renderIntro();
+  renderIntro();
+
+  socket.emit("ready", {});
 
   paddleIndex = 0;
   window.requestAnimationFrame(animate);
@@ -211,3 +215,7 @@ function startGame() {
 
 // On Load
 startGame();
+
+socket.on("connect", () => {
+  console.log("Connected as...", socket.id);
+});
