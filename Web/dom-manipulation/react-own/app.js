@@ -54,3 +54,11 @@ function Counter() {
 // }
 
 // rootNode.className = "root";  this doing imperative way because i am modifying the DOM directly
+
+rootNode.addEventListener("click", function (event) {
+  if (event.target.tagName === "BUTTON") {
+    console.log("Clicked Button");
+  } else {
+    console.log("Did't click the button");
+  }
+});

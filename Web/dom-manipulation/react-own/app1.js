@@ -1,7 +1,6 @@
 const rootNode = document.getElementById("app");
 const root = ReactDOM.createRoot(rootNode);
-
-console.log("===>>>", root);
+// console.log("===>>>", root);
 let counterName = "One";
 // root.render(React.createElement(App));
 root.render(<App />);
@@ -19,11 +18,18 @@ function App() {
 }
 
 function Counter({ name }) {
+  const clickHandler = (event) => {
+    console.log("React handled click ");
+    console.log(event);
+  };
+
   return (
     <article>
       <h2>Counter {name} </h2>
       <p>You clicked 1 time</p>
-      <button className="button">Click me</button>
+      <button className="button" onClick={clickHandler}>
+        Click me
+      </button>
     </article>
   );
 }
