@@ -1,15 +1,13 @@
 //  Canvas Related code
 const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d");
-const socket = io("http://localhost:3000");
+const socket = io();
 let isReferee = false;
 let paddleIndex = 0;
 
 let width = 500;
 let height = 700;
-
 // Paddle
-
 let paddleHeight = 10;
 let paddleWidth = 50;
 let paddleDiff = 25;
@@ -199,7 +197,7 @@ function animate() {
 function loadGame() {
   createCanvas();
   renderIntro();
-  socket.emit("ready", {});
+  socket.emit("ready");
 }
 
 // Start Game,
@@ -238,8 +236,11 @@ socket.on("startGame", (refereeId) => {
 });
 
 socket.on("paddleMove", (paddleData) => {
-  // Update the paddle position of the other player
   // Toggle 1 into 0 and 0 into 1 to get the index of the opponent's paddle
-  const openentPaddleIndex = 1 - paddleIndex;
-  paddleX[oppenentPaddleIndex] = paddleData.xPositon;
+  const opponentPaddleIndex = 1 - paddleIndex;
+  paddleX[opponentPaddleIndex] = paddleData.xPosition;
+});
+
+socket.on("ballMove", (ballData) => {
+  ({ ballX, ballY, score } = ballData);
 });
