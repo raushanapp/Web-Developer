@@ -23,13 +23,33 @@ function Counter({ name }) {
     console.log(event);
   };
 
+  const parentClickHandler = (event) => {
+    console.log("Parent was clicked too");
+  };
+
+  const linkClickHandler = (event) => {
+    event.preventDefault();
+    console.log("Going to site");
+    event.stopPropagation();
+  };
+
   return (
-    <article>
+    <article onClick={parentClickHandler}>
       <h2>Counter {name} </h2>
       <p>You clicked 1 time</p>
       <button className="button" onClick={clickHandler}>
         Click me
       </button>
+
+      <p>
+        <a
+          href="http://understandingreact.com"
+          target="_blank"
+          onClick={linkClickHandler}
+        >
+          Understanding React
+        </a>
+      </p>
     </article>
   );
 }
