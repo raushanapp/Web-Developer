@@ -8,7 +8,7 @@ function App() {
       <section>
         <h1>Use Reducer</h1>
         <Counter name="First Counter" />
-        <Counter name="Second Counter" />
+        <Counter2 name="Second Counter" />
       </section>
     </>
   );
@@ -28,7 +28,8 @@ function Counter(props) {
     { click: 0 },
   );
 
-  const [numOfClicks, setNumOfClicks] = React.useState(0);
+  //   const [numOfClicks, setNumOfClicks] = React.useState(0);
+  const [numOfClicks, setNumOfClicks] = React.useState({ total: 0 });
   const [myName, setMyName] = React.useState("Tony");
   //  this calling useState will be called on every render, so the value of myName will always be "Tony" on every render. The setMyName function will not be called, so the value of myName will never change. This is because the useState hook is called with the initial value of "Tony" on every render, and the setMyName function is never called to update the state.
   //   let test = "";
@@ -44,17 +45,28 @@ function Counter(props) {
     setNumOfClicks(numOfClicks + 1);
     setNumOfClicks(numOfClicks + 1);
   }
+
+  function handleWrongClickObject() {
+    numOfClicks.total = numOfClicks.total + 1;
+    setNumOfClicks(numOfClicks);
+  }
   // handle correct click handler, this will work as expected because the state is updated immediately, so the value of numOfClicks will be 3 when the function is called. The setNumOfClicks function is called three times, and the state is updated immediately, so the value of numOfClicks will be 3 when the function is called.
   function handleClick() {
     setNumOfClicks((prevNumOfClicks) => prevNumOfClicks + 1);
     setNumOfClicks((prevNumOfClicks) => prevNumOfClicks + 1);
     setNumOfClicks((prevNumOfClicks) => prevNumOfClicks + 1);
   }
+  function handleClickObject() {
+    setNumOfClicks({ ...numOfClicks, total: numOfClicks.total + 1 });
+  }
 
   return (
     <article>
       <h2>Counter {props.name}</h2>
-      <p>You clicked {numOfClicks} times</p>
+      <p>You clicked {numOfClicks.total} times</p>
+      <p>
+        <button onClick={handleWrongClickObject}>Click me (wont't work)</button>
+      </p>
       <button
         className="btn btn-primary"
         onClick={
@@ -62,9 +74,34 @@ function Counter(props) {
           //   dispatch({ type: "Increment" });
           //   setNumOfClicks(numOfClicks + 1);
           //   }
-          handleClick
+          //   handleClick
+          handleClickObject
         }
       >
+        Click me
+      </button>
+    </article>
+  );
+}
+
+function Counter2(props) {
+  const [numOfClicks, setNumOfClicks] = React.useState({ total: 0 });
+
+  React.useEffect(() => {
+    console.log("In Use Effect");
+    document.title = `You clicked ${numOfClicks.total} times`;
+  }, [numOfClicks.total]); // numOfClicks  each click run when do not pass the current value in the dependences
+
+  function handleClickObject() {
+    setNumOfClicks({ ...numOfClicks, total: numOfClicks.total + 1 });
+  }
+
+  return (
+    <article>
+      <h2>Counter {props.name}</h2>
+      <p>You clicked {numOfClicks.total} times</p>
+
+      <button className="btn btn-primary" onClick={handleClickObject}>
         Click me
       </button>
     </article>
