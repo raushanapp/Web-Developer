@@ -40,7 +40,7 @@ const Counter = React.forwardRef(function Counter(props, buttonRef) {
   return (
     <article>
       <h2>Counter {props.name}</h2>
-      <p>You clicks {numOfClicks.total} times</p>
+      <p>You clicked {numOfClicks.total} times</p>
       <p>
         <button className="button" onClick={handleClick} ref={buttonRef}>
           Click me
