@@ -2,29 +2,13 @@ const rootNode = document.getElementById("app");
 const root = ReactDOM.createRoot(rootNode);
 root.render(<App />);
 
-/* objects */
-class CounterObj {
-  constructor(name) {
-    this.name = name;
-    this.show = true;
-    this.total = 0;
-  }
-}
-
-const counterData = [
-  new CounterObj("A"),
-  new CounterObj("B"),
-  new CounterObj("C"),
-];
-
-/*End  objects */
-
 function App() {
   return (
     <>
       <h1>Counters</h1>
       <section>
-        <CounterList />
+        <Counter name="One" />
+        <Counter name="Two" />
       </section>
     </>
   );
@@ -46,18 +30,6 @@ function useCounter() {
     setCounterVal({ ...counterVal, total: counterVal.total + 1 });
   };
   return [counterVal, increment];
-}
-
-// CounterList
-
-function CounterList() {
-  return (
-    <section>
-      {counterData?.map((counter, index) => (
-        <Counter name={counter.name} key={index} />
-      ))}
-    </section>
-  );
 }
 
 function Counter(props) {
