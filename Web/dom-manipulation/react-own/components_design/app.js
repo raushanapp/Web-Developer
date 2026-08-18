@@ -16,7 +16,7 @@ class CounterObj {
 function App() {
   const [counterData, setCounterData] = React.useState([
     new CounterObj("A", true, 0),
-    new CounterObj("B", true, 0),
+    new CounterObj("B", false, 0),
     new CounterObj("C", true, 0),
   ]);
 
@@ -42,7 +42,9 @@ function App() {
           increment={increment}
           decrement={decrement}
         />
-        <CounterSummary counterData={counterData} />
+        <CounterTools>
+          <CounterSummary counterData={counterData} />
+        </CounterTools>
       </section>
     </>
   );
@@ -107,10 +109,16 @@ function Counter({ counter, increment, decrement, index }) {
     <dl className="counter">
       <dt>Counter {counter.name}</dt>
       <dd className="counter_value">
-        <button className="button" onClick={handleDecrementClick}>
-          -
-        </button>
+        {counter.total > 0 ? (
+          <button className="button" onClick={handleDecrementClick}>
+            -
+          </button>
+        ) : (
+          <div className="counter_emptu"></div>
+        )}
+
         {counter.total}
+
         <button className="button" onClick={handleIncrementClick}>
           +
         </button>
@@ -119,11 +127,20 @@ function Counter({ counter, increment, decrement, index }) {
   );
 }
 
+function CounterTools({ children }) {
+  return <>{children}</>;
+}
+
 function CounterSummary({ counterData }) {
-  const summary = counterData
+  const sortData = [...counterData].sort((a, b) => {
+    return b.total - a.total;
+  });
+
+  const summary = sortData
+    .filter((counter) => counter.show)
     .map((counter) => {
       return counter.name + "(" + counter.total + ")";
     })
     .join(",");
-  return <p>Summary :{summary}</p>;
+  return <p>Summary : {summary}</p>;
 }
