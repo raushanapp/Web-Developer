@@ -13153,7 +13153,7 @@
   }
   function appendChild(parentInstance, child) {
     console.log(`Appending Child......`);
-    console.log(child);
+    console.log(child, "  <<=== CHILD");
     parentInstance.appendChild(child);
   }
   function appendChildToContainer(container, child) {
