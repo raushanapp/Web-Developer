@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Understanding React</title>
+    <style>
+      body {
+        font-size: 16px;
+      }
+      .button {
+        background-color: blue;
+        color: white;
+      }
+      .counter,
+      .counter_value {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 1rem;
+      }
+      .counter_value {
+        margin-inline-start: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app"></main>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel" data-type="module">
+      // React Component with JSX
+      (async () => {
+        // Dynamic imports for React 19
+        const React = await import("https://esm.sh/react@19/?dev");
+        const ReactDOM = await import("https://esm.sh/react-dom@19/client?dev");
+
+        const { useState, use } = React.default;
+        const { createRoot } = ReactDOM.default;
+        // Instead of a separate app.js file, put all your app code here
+        // Note this isn't how you would do this in production, but useful for leraning
+
+        // function App() {
+        //   return null; // app code here
+        // }
+
+        // Objects
+
+        class CounterObj {
+          constructor(name, show, total) {
+            this.name = name;
+            this.show = show;
+            this.total = total;
+          }
+        }
+
+        // End the objects
+
+        const CounterContext = React.createContext(3);
+        const OtherContext = React.createContext(4);
+
+        function App() {
+          const [counterData, setCounterData] = useState([
+            new CounterObj("A", true, 0),
+            new CounterObj("B", false, 0),
+            new CounterObj("C", true, 0),
+          ]);
+
+          const increment = (index) => {
+            const newData = [...counterData];
+            newData[index].total = newData[index].total + 1;
+            setCounterData(newData);
+          };
+
+          const decrement = (index) => {
+            const newData = [...counterData];
+            const decrementedCounter = newData[index].total - 1;
+            newData[index].total =
+              decrementedCounter >= 0 ? decrementedCounter : 0;
+            setCounterData(newData);
+          };
+
+          const contextData = [counterData, increment, decrement];
+
+          return (
+            <>
+              <CounterContext value={contextData}>
+                <h1>Counters</h1>
+                <section>
+                  <CounterList />
+                  <CounterTools />
+                </section>
+              </CounterContext>
+            </>
+          );
+        }
+
+        function useDocumentTitle(title) {
+          return React.useEffect(() => {
+            const originalTitle = document.title;
+            document.title = title;
+            return () => {
+              document.title = originalTitle;
+            };
+          }, [title]);
+        }
+
+        // CounterList
+        function CounterList() {
+          const [contextData] = use(CounterContext);
+          useDocumentTitle(
+            "Clicks : " +
+              contextData
+                ?.map((counter) => {
+                  return counter.total;
+                })
+                .join(","),
+          );
+
+          return (
+            <section>
+              {contextData?.map((counter, index) => (
+                <Counter key={index} counter={counter} index={index} />
+              ))}
+            </section>
+          );
+        }
+
+        function Counter({ counter, index }) {
+          const [_, increment, decrement] = use(CounterContext);
+          function handleIncrementClick() {
+            increment(index);
+          }
+
+          function handleDecrementClick() {
+            decrement(index);
+          }
+
+          return (
+            <dl className="counter">
+              <dt>Counter {counter.name}</dt>
+              <dd className="counter_value">
+                {counter.total > 0 ? (
+                  <button className="button" onClick={handleDecrementClick}>
+                    -
+                  </button>
+                ) : (
+                  <div className="counter_emptu"></div>
+                )}
+
+                {counter.total}
+
+                <button className="button" onClick={handleIncrementClick}>
+                  +
+                </button>
+              </dd>
+            </dl>
+          );
+        }
+
+        function CounterTools() {
+          return <CounterSummary />;
+        }
+
+        function CounterSummary() {
+          const [contextData] = use(CounterContext);
+          const sortData = [...contextData].sort((a, b) => {
+            return b.total - a.total;
+          });
+
+          const summary = sortData
+            .filter((counter) => counter.show)
+            .map((counter) => {
+              return counter.name + "(" + counter.total + ")";
+            })
+            .join(",");
+          return <p>Summary : {summary}</p>;
+        }
+
+        //  Ensure DOM is ready, then render
+        const rootElement = document.getElementById("app");
+        const root = createRoot(rootElement);
+        root.render(<App />);
+      })();
+    </script>
+  </body>
+</html>

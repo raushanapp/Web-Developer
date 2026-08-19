@@ -13,7 +13,8 @@ class CounterObj {
 
 /*End  objects */
 
-const CounterContext = React.createContext();
+const CounterContext = React.createContext(3);
+const otherContext = React.createContext(4);
 
 function App() {
   const [counterData, setCounterData] = React.useState([
@@ -126,14 +127,18 @@ function CounterTools() {
   const contextData = [counterData, null, null];
 
   return (
-    <CounterContext.Provider value={contextData}>
-      <CounterSummary />
-    </CounterContext.Provider>
+    <otherContext.Provider value={contextData}>
+      <CounterContext.Provider value={contextData}>
+        <CounterSummary />
+      </CounterContext.Provider>
+    </otherContext.Provider>
   );
 }
 
 function CounterSummary() {
+  const [otherData] = React.useContext(otherContext);
   const [contextData] = React.useContext(CounterContext);
+  console.log("Other Context data : ", otherData);
   const sortData = [...contextData].sort((a, b) => {
     return b.total - a.total;
   });

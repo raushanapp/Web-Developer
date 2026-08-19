@@ -17178,6 +17178,7 @@
         lastContextDependency = lastContextDependency.next = contextItem;
       }
     }
+    console.log("Currently Rendering Fiber", currentlyRenderingFiber);
 
     return value;
   }
