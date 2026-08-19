@@ -13148,12 +13148,12 @@
     setTextContent(domElement, "");
   }
   function commitTextUpdate(textInstance, oldText, newText) {
-    console.log(`Updating text node: ${newText}`);
+    // console.log(`Updating text node: ${newText}`);
     textInstance.nodeValue = newText;
   }
   function appendChild(parentInstance, child) {
-    console.log(`Appending Child......`);
-    console.log(child, "  <<=== CHILD");
+    // console.log(`Appending Child......`);
+    // console.log(child, "  <<=== CHILD");
     parentInstance.appendChild(child);
   }
   function appendChildToContainer(container, child) {
@@ -13161,16 +13161,16 @@
 
     if (container.nodeType === COMMENT_NODE) {
       parentNode = container.parentNode;
-      console.log(`Inseting child in container...`);
-      console.log(child);
+      // console.log(`Inseting child in container...`);
+      // console.log(child);
 
       parentNode.insertBefore(child, container);
     } else {
       parentNode = container;
-      console.log(`Appending Child to container......`);
-      console.log(child);
-      console.log("... the container is ...  ");
-      console.log(parentNode);
+      // console.log(`Appending Child to container......`);
+      // console.log(child);
+      // console.log("... the container is ...  ");
+      // console.log(parentNode);
       parentNode.appendChild(child);
     } // This container might be used for a portal.
     // If something inside a portal is clicked, that click should bubble
@@ -13203,18 +13203,18 @@
   }
 
   function removeChild(parentInstance, child) {
-    console.log("Removing child from parent...");
-    console.log(child);
+    // console.log("Removing child from parent...");
+    // console.log(child);
     parentInstance.removeChild(child);
   }
   function removeChildFromContainer(container, child) {
     if (container.nodeType === COMMENT_NODE) {
       container.parentNode.removeChild(child);
     } else {
-      console.log("Removing child from container...");
+      // console.log("Removing child from container...");
       container.removeChild(child);
-      console.log("Container....");
-      console.log(container);
+      // console.log("Container....");
+      // console.log(container);
     }
   }
   function clearSuspenseBoundary(parentInstance, suspenseInstance) {
