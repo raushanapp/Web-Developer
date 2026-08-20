@@ -143,14 +143,16 @@ function CounterTools({ counterData, visibleTab, setVisibleTab }) {
 }
 
 function CounterSummary({ counterData, visibleTab, setVisibleTab }) {
-  console.log("Rendering counter summary");
+  // console.log("Rendering counter summary");
+
   const sortData = [...counterData].sort((a, b) => {
     return b.total - a.total;
   });
 
-  const filterSortedData = sortData.filter(
-    (counter) => counter.tab === visibleTab,
-  );
+  const filterSortedData = React.useMemo(() => {
+    // console.log("Filtering Data");
+    return sortData.filter((counter) => counter.tab === visibleTab);
+  }, [visibleTab]);
   return (
     <section>
       <header>
@@ -177,7 +179,7 @@ const CounterSummaryDetails = React.memo(function CounterSummaryDetails({
   name,
   total,
 }) {
-  console.log("Rendering CounterSummaryDetails");
+  // console.log("Rendering CounterSummaryDetails");
   return (
     <p>
       {name} ({total})

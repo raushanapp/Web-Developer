@@ -17178,7 +17178,7 @@
         lastContextDependency = lastContextDependency.next = contextItem;
       }
     }
-    console.log("Currently Rendering Fiber", currentlyRenderingFiber);
+    // console.log("Currently Rendering Fiber", currentlyRenderingFiber);
 
     return value;
   }
@@ -28901,7 +28901,7 @@
   }
 
   function commitMutationEffectsOnFiber(finishedWork, root, lanes) {
-    console.log("Committing Update");
+    // console.log("Committing Update");
     var current = finishedWork.alternate;
     var flags = finishedWork.flags; // The effect flag should be checked *after* we refine the type of fiber,
     // because the fiber tag is more specific. An exception is any flag related
@@ -31380,7 +31380,7 @@
     var current = unitOfWork.alternate;
     setCurrentFiber(unitOfWork);
     var next;
-    console.log("Performing unit of work....");
+    // console.log("Performing unit of work....");
 
     if ((unitOfWork.mode & ProfileMode) !== NoMode) {
       startProfilerTimer(unitOfWork);
@@ -31682,7 +31682,7 @@
 
       requestPaint();
 
-      console.log("Execution Context : ", executionContext);
+      // console.log("Execution Context : ", executionContext);
       executionContext = prevExecutionContext; // Reset the priority to the previous non-sync value.
 
       setCurrentUpdatePriority(previousPriority);
@@ -33272,7 +33272,7 @@
           break;
       }
     }
-    console.log(workInProgress);
+    // console.log(workInProgress);
     return workInProgress;
   } // Used to reuse a Fiber for a second pass.
 
