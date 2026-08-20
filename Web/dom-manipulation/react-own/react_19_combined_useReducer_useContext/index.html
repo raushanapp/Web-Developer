@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Understanding React</title>
+    <style>
+      body {
+        font-size: 16px;
+      }
+      .button {
+        background-color: blue;
+        color: white;
+      }
+      .counter,
+      .counter_value {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 1rem;
+      }
+      .counter_value {
+        margin-inline-start: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app"></main>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel" data-type="module">
+      // React Component with JSX
+      (async () => {
+        // Dynamic imports for React 19
+        const React = await import("https://esm.sh/react@19/?dev");
+        const ReactDOM = await import("https://esm.sh/react-dom@19/client?dev");
+
+        const { useState, use, useReducer, memo, useMemo, useCallback } =
+          React.default;
+        const { createRoot } = ReactDOM.default;
+        // Instead of a separate app.js file, put all your app code here
+        // Note this isn't how you would do this in production, but useful for leraning
+
+        // function App() {
+        //   return null; // app code here
+        // }
+
+        // Objects
+
+        class CounterObj {
+          constructor(id, name, tab, total) {
+            this.id = id;
+            this.name = name;
+            this.tab = tab;
+            this.total = total;
+          }
+        }
+
+        // End the objects
+
+        //  context
+        const CounterContext = React.createContext(null);
+        const CounterDispatchContext = React.createContext(null);
+        const TabContext = React.createContext(null);
+        const TabDispatchContext = React.createContext(null);
+
+        // Counter Reducer
+
+        function counterReducer(counterData, action) {
+          switch (action.type) {
+            case "increment": {
+              return counterData.map((counter) => {
+                if (counter.id === action.id) {
+                  return {
+                    ...counter,
+                    total: counter.total + 1,
+                  };
+                } else {
+                  return counter;
+                }
+              });
+            }
+            case "decrement": {
+              return counterData.map((counter) => {
+                if (counter.id === action.id) {
+                  return {
+                    ...counter,
+                    total: counter.total >= 0 ? counter.total - 1 : 0,
+                  };
+                } else {
+                  return counter;
+                }
+              });
+            }
+            default: {
+              throw Error("Unknown action" + action.type);
+            }
+          }
+        }
+
+        function tabReducer(visibleTab, action) {
+          switch (action.type) {
+            case "change-tab": {
+              if (action.tab === visibleTab) {
+                return visibleTab;
+              } else {
+                return action.tab;
+              }
+            }
+            default: {
+              throw Error("Unknown action" + action.type);
+            }
+          }
+        }
+
+        function App() {
+          const [counterData, counterDispatch] = useReducer(counterReducer, [
+            new CounterObj(1, "A", 1, 0),
+            new CounterObj(2, "B", 2, 0),
+            new CounterObj(3, "C", 2, 0),
+          ]);
+
+          const [visibleTab, visibleDispatch] = useReducer(tabReducer, 1);
+
+          return (
+            <>
+              <CounterContext value={counterData}>
+                <CounterDispatchContext value={counterDispatch}>
+                  <TabContext value={visibleTab}>
+                    <TabDispatchContext value={visibleDispatch}>
+                      <h1>Counters</h1>
+                      <section>
+                        <CounterList />
+                        <CounterTools />
+                      </section>
+                    </TabDispatchContext>
+                  </TabContext>
+                </CounterDispatchContext>
+              </CounterContext>
+            </>
+          );
+        }
+
+        function useDocumentTitle(title) {
+          return React.useEffect(() => {
+            const originalTitle = document.title;
+            document.title = title;
+            return () => {
+              document.title = originalTitle;
+            };
+          }, [title]);
+        }
+
+        // CounterList
+        function CounterList() {
+          const contextData = use(CounterContext);
+          useDocumentTitle(
+            "Clicks : " +
+              contextData
+                ?.map((counter) => {
+                  return counter.total;
+                })
+                .join(","),
+          );
+
+          return (
+            <section>
+              {contextData?.map((counter) => (
+                <Counter key={counter.id} counter={counter} />
+              ))}
+            </section>
+          );
+        }
+
+        function Counter({ counter }) {
+          const id = React.useId();
+          const counterDispatch = use(CounterDispatchContext);
+          function handleIncrementClick(event) {
+            counterDispatch({ type: "increment", id: counter.id });
+            event.preventDefault();
+          }
+
+          function handleDecrementClick(event) {
+            counterDispatch({ type: "decrement", id: counter.id });
+            event.preventDefault();
+          }
+
+          return (
+            <dl className="counter" id={id}>
+              <dt>Counter {counter.name}</dt>
+              <dd className="counter_value">
+                {counter.total > 0 ? (
+                  <button className="button" onClick={handleDecrementClick}>
+                    -
+                  </button>
+                ) : (
+                  <div className="counter_emptu"></div>
+                )}
+
+                {counter.total}
+
+                <button className="button" onClick={handleIncrementClick}>
+                  +
+                </button>
+              </dd>
+            </dl>
+          );
+        }
+
+        function CounterTools() {
+          return <CounterSummary />;
+        }
+
+        function CounterSummary() {
+          const counterData = use(CounterContext);
+          const visibleTab = use(TabContext);
+          const tabDispatch = use(TabDispatchContext);
+
+          const sortData = [...counterData].sort((a, b) => {
+            return b.total - a.total;
+          });
+          //  this example of useMemo to memoizing the value
+          const filterSortedData = useMemo(() => {
+            // console.log("Filtering Data");
+            return sortData.filter((counter) => counter.tab === visibleTab);
+          }, [counterData, visibleTab]);
+
+          const setVisibleTab1 = useCallback((event) => {
+            tabDispatch({ type: "change-tab", tab: 1 });
+            event.preventDefault();
+          }, []);
+
+          const setVisibleTab2 = useCallback((event) => {
+            tabDispatch({ type: "change-tab", tab: 2 });
+            event.preventDefault();
+          }, []);
+          return (
+            <section>
+              <CounterSummaryHeader
+                setVisibleTab1={setVisibleTab1}
+                setVisibleTab2={setVisibleTab2}
+              />
+              {filterSortedData.map((counter) => (
+                <CounterSummaryDetails
+                  name={counter.name}
+                  total={counter.total}
+                  key={counter.id}
+                />
+              ))}
+            </section>
+          );
+        }
+
+        const CounterSummaryHeader = memo(function CounterSummaryHeader({
+          setVisibleTab1,
+          setVisibleTab2,
+        }) {
+          return (
+            <header>
+              <a href="#" onClick={setVisibleTab1}>
+                Tab 1
+              </a>{" "}
+              &nbsp;&nbsp; | &nbsp;&nbsp;{" "}
+              <a href="#" onClick={setVisibleTab2}>
+                Tab 2
+              </a>
+            </header>
+          );
+        });
+
+        const CounterSummaryDetails = memo(function CounterSummaryDetails({
+          name,
+          total,
+        }) {
+          return (
+            <p>
+              {name} ({total})
+            </p>
+          );
+        });
+
+        //  Ensure DOM is ready, then render
+        const rootElement = document.getElementById("app");
+        const root = createRoot(rootElement);
+        root.render(<App />);
+      })();
+    </script>
+  </body>
+</html>
