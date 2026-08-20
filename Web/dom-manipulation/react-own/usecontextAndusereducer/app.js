@@ -181,11 +181,9 @@ function CounterSummary() {
   });
   //  this example of useMemo to memoizing the value
   const filterSortedData = React.useMemo(() => {
-    console.log("Filtering Data");
+    // console.log("Filtering Data");
     return sortData.filter((counter) => counter.tab === visibleTab);
-  }, [visibleTab]);
-
-  console.log(filterSortedData[0].total);
+  }, [counterData, visibleTab]);
 
   const setVisibleTab1 = React.useCallback((event) => {
     tabDispatch({ type: "change-tab", tab: 1 });
