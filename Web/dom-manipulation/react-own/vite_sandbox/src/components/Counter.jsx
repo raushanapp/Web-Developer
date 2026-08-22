@@ -1,27 +1,27 @@
-import { use, useEffect, useId } from "react";
-import { CounterDispatchContext, TabContext } from "../context/contexts";
+import { use, useId } from "react";
+import { CounterDispatchContext } from "../context/contexts";
 
 export function Counter({ counter }) {
   const counterDispatch = use(CounterDispatchContext);
-  const visibleTab = use(TabContext);
+  // const visibleTab = use(TabContext);
   const id = useId();
 
-  useEffect(() => {
-    let timerId;
-    let seconds = 0;
-    if (counter.tab === visibleTab && counter.name.shortName === "A") {
-      timerId = setInterval(() => {
-        seconds = seconds + 1;
-        // console.log(
-        //   `Time since ${counter.name.shortName} was available and/or clicked: ${seconds}s`,
-        // );
-      }, 1000);
-    }
+  // useEffect(() => {
+  //   let timerId;
+  //   let seconds = 0;
+  //   if (counter.tab === visibleTab && counter.name.shortName === "A") {
+  //     timerId = setInterval(() => {
+  //       seconds = seconds + 1;
+  //       // console.log(
+  //       //   `Time since ${counter.name.shortName} was available and/or clicked: ${seconds}s`,
+  //       // );
+  //     }, 1000);
+  //   }
 
-    return () => {
-      clearInterval(timerId);
-    };
-  }, [counter.name.shortName, counter.tab, counter.total, visibleTab]);
+  //   return () => {
+  //     clearInterval(timerId);
+  //   };
+  // }, [counter.name.shortName, counter.tab, counter.total, visibleTab]);
 
   function handleIncrementClick(event) {
     counterDispatch({ type: "increment", id: counter.id });
