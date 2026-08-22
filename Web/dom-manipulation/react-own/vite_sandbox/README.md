@@ -10,7 +10,7 @@ The dashboard displays three counters. Each counter can be incremented, the summ
 - Decrement counters while their value is greater than zero in the UI.
 - Switch between Tab 1 and Tab 2 in the summary tools.
 - Sort visible counters by descending total.
-- Update the document title with the current totals.
+- Update the document title with the current totals and restore the previous title when the hook is cleaned up.
 - Log elapsed seconds for Counter A while it is visible on the active tab.
 
 ## Architecture
@@ -43,7 +43,7 @@ Both state values and their dispatch functions are provided through separate con
 
 ### Component responsibilities
 
-- `CounterList` reads the counter collection, updates the document title, and renders one `Counter` per item.
+- `CounterList` reads the counter collection, updates the document title through `useDocumentTitle`, and renders one `Counter` per item.
 - `Counter` displays a counter and dispatches `increment` or `decrement` actions. It also owns the visibility-dependent timer effect for Counter A.
 - `CounterTools` is the summary tools boundary.
 - `CounterSummary` reads counters and the active tab, sorts and filters the data, and dispatches tab changes.
@@ -71,7 +71,7 @@ src/
 |   |-- Counter_Header_Summary.jsx  # Tab controls
 |   `-- Counter_Summary_Details.jsx # Summary row
 |-- context/contexts.js             # State and dispatch contexts
-|-- hooks/use_document_title.js     # Document title effect
+|-- hooks/use_document_title.js     # Document title effect with cleanup
 |-- models/counter_obj.js           # Counter data model
 `-- reducers/
 	|-- counter_reducer.js           # Counter state transitions
@@ -107,8 +107,6 @@ pnpm preview
 
 ## Technology stack
 
-- React 19
-- React DOM 19
 - React 19
 - React DOM 19
 - Vite
