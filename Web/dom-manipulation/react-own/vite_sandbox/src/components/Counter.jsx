@@ -11,10 +11,10 @@ export function Counter({ counter }) {
     let seconds = 0;
     if (counter.tab === visibleTab && counter.name.shortName === "A") {
       timerId = setInterval(() => {
-        seconds++;
-        console.log(
-          `Time since ${counter.name.shortName} was available and/or clicked: ${seconds}s`,
-        );
+        seconds = seconds + 1;
+        // console.log(
+        //   `Time since ${counter.name.shortName} was available and/or clicked: ${seconds}s`,
+        // );
       }, 1000);
     }
 

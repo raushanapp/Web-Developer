@@ -12,6 +12,7 @@ import {
 } from "./context/contexts";
 import { CounterList } from "./components/Counter_List";
 import { CounterTools } from "./components/Counter_Tools";
+import { AddCounter } from "./components/Add_Counter";
 
 function App() {
   const [counterData, counterDispatch] = useReducer(counterReducer, [
@@ -29,6 +30,9 @@ function App() {
           <TabContext value={visibleTab}>
             <TabDispatchContext value={visibleDispatch}>
               <h1>Counters</h1>
+              <section>
+                <AddCounter />
+              </section>
               <section>
                 <CounterList />
                 <CounterTools />
