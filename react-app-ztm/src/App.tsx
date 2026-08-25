@@ -5,6 +5,8 @@ import SearchBox from "./components/search-box";
 import { robots } from "./data";
 import Scroll from "./components/scroll";
 
+// const PROD = import.meta.env.PROD;
+
 class App extends React.Component<
   object,
   { robots: typeof robots; searchField: string }
@@ -24,6 +26,11 @@ class App extends React.Component<
       .then((response) => response.json())
       .then((user) => this.setState({ robots: user }));
     // console.log("componentDidMount 2"); this run third and repaint the items then runs again render
+
+    // if (PROD === "production") {
+    //   console.log("Prod");
+    // }
+    // console.log(PROD, "====serever");
   }
 
   onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
