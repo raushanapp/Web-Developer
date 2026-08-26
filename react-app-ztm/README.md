@@ -15,59 +15,71 @@ The React Compiler is not enabled on this template because of its impact on dev 
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
+````js
 export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+  # RoboFriends
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+  RoboFriends is a small React and TypeScript directory app built with Vite. It loads a collection of users and presents them as robot-themed profile cards. The project is part of a web development course and demonstrates React class components, state, lifecycle methods, reusable components, and live filtering.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+  ## Features
+
+  - Fetches user data from the JSONPlaceholder API when the app starts
+  - Shows a loading state while the data is being requested
+  - Filters users instantly by name through the search field
+  - Displays each user's generated RoboHash image, name, and email address
+  - Renders cards through reusable `Card` and `CardList` components
+  - Provides a scrollable results area for the card collection
+  - Uses TypeScript for component props and application state
+
+  ## Tech Stack
+
+  - React 19
+  - TypeScript
+  - Vite
+  - ESLint
+  - JSONPlaceholder for user data
+  - RoboHash for robot images
+
+  ## Getting Started
+
+  ### Prerequisites
+
+  - Node.js installed locally
+  - pnpm installed locally
+
+  ### Installation
+
+  ```bash
+  pnpm install
+````
+
+### Run the development server
+
+```bash
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Vite will print the local URL in the terminal. Open that URL in a browser to use the app.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Available Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Command        | Description                                                    |
+| -------------- | -------------------------------------------------------------- |
+| `pnpm dev`     | Starts the Vite development server with hot module replacement |
+| `pnpm build`   | Type-checks the project and creates a production build         |
+| `pnpm lint`    | Runs ESLint across the project                                 |
+| `pnpm preview` | Serves the production build locally                            |
+
+## Data Sources
+
+User data is requested from [`jsonplaceholder.typicode.com/users`](https://jsonplaceholder.typicode.com/users). Robot avatars are generated using the user's ID with [RoboHash](https://robohash.org/). The app therefore needs an internet connection to load the user list and avatar images.
+
+## Project Structure
+
+```text
+src/
+  components/  Reusable search, card, and scroll components
+  data/        Local robot data used for TypeScript typing
+  pages/       Card list page component
+  App.tsx      Application state, data fetching, and filtering
 ```
