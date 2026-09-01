@@ -22,3 +22,18 @@ console.log("Plain Javascript Object", App());
 // console.log("React Element", React.createElement(App));
 //  React Elements -- > (what you want the DOM to look lilke)
 //  DOM Elements --> (what the user is experirencing right now)
+
+// before React does its work;
+let arrticleElements = document.getElementsByTagName("article");
+let arrticleElement = document.getElementsByTagName("article").item(0);
+console.log("arrticleElements", arrticleElements);
+console.log("arrticleElement", arrticleElement);
+
+// after React does its work;
+
+setTimeout(() => {
+  let arrticleElements = document.getElementsByTagName("article");
+  let arrticleElement = document.getElementsByTagName("article").item(0);
+  console.log("arrticleElements", arrticleElements);
+  console.log("arrticleElement", arrticleElement);
+}, 1000);

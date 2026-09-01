@@ -1,8 +1,31 @@
-# React Learning Notes
+# React Learning & Interview Guide
 
-This folder is a hands-on React study notebook. The examples move from rendering elements manually to JSX, state, effects, Context, reducers, performance optimization, and selected React 19 APIs.
+This folder is a hands-on React study notebook with runnable examples. The content progresses from rendering fundamentals through JSX, hooks, state management, effects, Context, reducers, performance optimization, and React 19 APIs.
 
-The code is intentionally small and experimental. Use this document to review the idea behind each example, then open the linked file and run it in the browser.
+Use this guide to study React concepts, practice implementations, and prepare for technical interviews.
+
+---
+
+## Quick Reference: Key Interview Topics
+
+| Topic                       | Key Points                                                               | File                                       |
+| --------------------------- | ------------------------------------------------------------------------ | ------------------------------------------ |
+| **React Mental Model**      | Declarative UI, state → render, diff algorithm                           | [app.js](app.js)                           |
+| **Events & Propagation**    | Bubbling, `preventDefault()`, `stopPropagation()`, event normalization   | [app1.js](app1.js)                         |
+| **Components & Props**      | Uppercase naming, props read-only, JSX syntax, fragments                 | [app2.js](app2.js)                         |
+| **useState**                | Setter schedules re-render, functional updaters, immutable updates       | [app2.js](app2.js)                         |
+| **Keys in Lists**           | Must be stable/unique, prefer database id over index, can reset state    | [app3.js](app3.js)                         |
+| **useEffect & Cleanup**     | Runs after render, dependencies, return cleanup function                 | [app5.js](app5.js)                         |
+| **Async & Race Conditions** | Ignore flag pattern, AbortController, Suspense + use()                   | [app4.js](app4.js)                         |
+| **useRef**                  | Doesn't cause re-render, DOM access, mutable value                       | [app6.js](app6.js)                         |
+| **Custom Hooks**            | Extract stateful logic, name with "use", top-level only                  | [custom_hooks/](custom_hooks/)             |
+| **Context**                 | Avoids prop drilling, provider + useContext, can cause re-renders        | [useContext_context/](useContext_context/) |
+| **Reducers**                | Pure functions, current state + action → new state                       | [reducers.js](reducers.js)                 |
+| **Memoization**             | `React.memo()`, `useMemo()`, `useCallback()` — use when measured as slow | [memo/](memo/)                             |
+| **Equality**                | `===` (reference), `Object.is()`, shallow vs deep comparison             | [equality.js](equality.js)                 |
+| **Closures & Stale Values** | Inner function captures outer scope, missing dependencies cause bugs     | [stale_closures.js](stale_closures.js)     |
+
+---
 
 ## How To Run The Examples
 
@@ -15,41 +38,158 @@ The code is intentionally small and experimental. Use this document to review th
 
 The current default entry point loads `es_modules/app.js`, which demonstrates a native JavaScript module import rather than a complete React UI.
 
+---
+
+## Common Interview Questions & Answers
+
+**Q: What's the difference between props and state?**
+
+- Props: Read-only inputs from parent, cannot be modified by child
+- State: Mutable data managed by the component itself
+
+**Q: Why can't you mutate state directly?**
+
+- React detects state changes by reference equality (`===`)
+- Direct mutation doesn't create a new reference
+- UI won't update; can cause stale/inconsistent rendering
+
+**Q: When should you use `useCallback` or `useMemo`?**
+
+- Only when you have a measured performance problem
+- Check with React DevTools Profiler first
+- Over-memoization can slow down your app
+
+**Q: How do you handle async data fetching?**
+
+- Use `useEffect` with cleanup to prevent stale requests
+- Set an `ignore` flag or use `AbortController`
+- Consider loading/error states and retries
+- React 19: Use `use()` with `Suspense` and cached promises
+
+**Q: What's the difference between `useContext` and Context?**
+
+- Context: Created with `React.createContext()`
+- useContext: Hook to read Context value
+- Provider: Component that wraps tree and supplies value
+
+**Q: How do you avoid prop drilling?**
+
+- Use Context for values needed by many distant components
+- Split contexts by concern (state, dispatch, theme, etc.)
+- Keep provider values stable to prevent unnecessary re-renders
+
+---
+
 ## Learning Roadmap
 
 ### 1. React's Core Mental Model
 
-React is a declarative UI library:
+React is a **declarative UI library**:
 
-- Describe what the UI should look like for the current state.
-- Store changing data in state.
-- Render again when state changes.
-- React compares the new element tree with the previous one and updates the necessary DOM nodes.
+- Describe what UI should look like for the current state
+- Store changing data in state
+- When state changes, React re-renders
+- React compares new tree with old tree and updates only changed DOM nodes
 
-Compare the first two examples:
+**Imperative vs Declarative:**
 
-- [app.js](app.js) uses `React.createElement` directly.
-- [app2.js](app2.js) uses JSX and hooks.
+```jsx
+// ✗ IMPERATIVE - How to do it
+const button = document.createElement("button");
+button.textContent = "Click";
+button.onclick = () => {
+  count++;
+  button.textContent = `Clicked ${count}`;
+  document.body.style.color = count > 5 ? "red" : "black";
+};
 
-`React.createElement("button", { className: "button" }, "Click me")` is the JavaScript form of JSX such as `<button className="button">Click me</button>`.
+// ✓ DECLARATIVE - What it should be
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div style={{ color: count > 5 ? "red" : "black" }}>
+      <button onClick={() => setCount(count + 1)}>Clicked {count}</button>
+    </div>
+  );
+}
+```
 
-`ReactDOM.createRoot(rootNode).render(<App />)` creates the React root and renders the component tree into the DOM element with id `app`.
+**Rendering Process:**
+
+1. Component function runs → returns JSX
+2. JSX converted to element tree (`React.createElement`)
+3. React creates/updates DOM nodes
+4. Repeat when state/props change
+
+**React vs Vanilla JS:**
+
+- Vanilla: Manually update DOM imperatively
+- React: Declare desired UI, React handles updates
+
+**createElement vs JSX:**
+
+```jsx
+// These are equivalent:
+React.createElement("button", { className: "btn" }, "Click me")
+
+<button className="btn">Click me</button>
+```
+
+Babel transforms JSX into `createElement` calls at build time.
+
+Examples: [app.js](app.js), [app2.js](app2.js)
 
 ### 2. Events, Event Propagation, and Re-rendering
 
-[app1.js](app1.js) demonstrates React event handlers, bubbling, `preventDefault`, and `stopPropagation`.
+[app1.js](app1.js) demonstrates event handlers, propagation control, and re-rendering.
 
-- Events normally bubble from the target element to its ancestors.
-- `event.preventDefault()` stops the browser's default action, such as following a link.
-- `event.stopPropagation()` stops the event from continuing to parent handlers.
-- React passes a normalized event object to the handler.
-- Calling `root.render(<App />)` again recalculates the UI from the current variables, but changing a normal variable alone does not automatically update the UI.
+**✦ Event Propagation:**
 
-Use a real `<button>` for an action. The examples use `<a href="#">` for tabs in a few places, which is why they need `preventDefault()`.
+| Method                             | Effect                                    | Use Case                        |
+| ---------------------------------- | ----------------------------------------- | ------------------------------- |
+| `event.preventDefault()`           | Stop browser default (submit, link, etc.) | Form handling, custom actions   |
+| `event.stopPropagation()`          | Stop bubbling to parent                   | Nested clickable elements       |
+| `event.stopImmediatePropagation()` | Stop this & parent handlers               | Multiple listeners              |
+| Default (bubble)                   | Event travels up the tree                 | Catch events at container level |
+
+**Why Bubbling Matters:**
+
+```jsx
+function handleParentClick() {
+  console.log("parent");
+}
+function handleChildClick(e) {
+  console.log("child");
+  // Without e.stopPropagation() → logs "child" then "parent"
+  e.stopPropagation(); // Prevents parent handler
+}
+
+return (
+  <div onClick={handleParentClick}>
+    <button onClick={handleChildClick}>Click</button>
+  </div>
+);
+```
+
+**Re-rendering Triggers:**
+
+- ✓ State changes (`setState`)
+- ✓ Props changes
+- ✓ Context changes
+- ✗ Local variable changes (just recompute, no render)
+- ✗ External variable changes (need state)
+
+**React Event Object:**
+
+- Normalized across browsers
+- Stored in event pool in older React versions (React 17+ auto-pooled)
+- Access event in async code: store values first or use `e.persist()`
+
+Example: [app1.js](app1.js)
 
 ### 3. Components, Props, and JSX
 
-A component is normally a function that returns JSX. Components should be named with an uppercase letter.
+A component is a function that returns JSX. Component names must start with uppercase.
 
 ```jsx
 function Counter({ name }) {
@@ -61,59 +201,105 @@ function App() {
 }
 ```
 
-Important rules:
+**✦ Key Rules:**
 
-- Props are inputs from a parent and should be treated as read-only.
-- A component can have local variables, but changing a local variable does not trigger a render.
-- Use JSX expressions with `{}` for JavaScript values.
-- Use `className` instead of HTML `class`.
-- Event handlers receive a function reference: `onClick={handleClick}`.
-- Do not call the handler while rendering: `onClick={handleClick()}` runs immediately.
-- Fragments (`<>...</>`) group elements without adding an extra DOM node.
+| Rule              | ✓ Correct                 | ✗ Wrong                   |
+| ----------------- | ------------------------- | ------------------------- |
+| Props read-only   | `const name = props.name` | `props.name = "new"`      |
+| Use className     | `<div className="box">`   | `<div class="box">`       |
+| Event handlers    | `onClick={handleClick}`   | `onClick={handleClick()}` |
+| JSX expressions   | `<h1>{count}</h1>`        | `<h1>{count}</h1>` broken |
+| Fragment grouping | `<>...</>`                | Extra div in DOM          |
 
-The component composition and `children` pattern are shown in [components_design/app.js](components_design/app.js): `CounterTools` receives content from its parent and renders `{children}`.
+**Props vs Local Variables:**
+
+- Props: Data from parent (re-render on change)
+- Local variables: Recalculated every render, don't trigger re-render
+
+```jsx
+// ✗ Won't re-render when count changes
+function Counter() {
+  let count = 0;
+  return <button onClick={() => count++}>{count}</button>;
+}
+
+// ✓ Will re-render
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}
+```
+
+**Component Composition:**
+
+- Use `children` prop to pass content
+- Compose larger UIs from small, focused components
+
+Example: [components_design/app.js](components_design/app.js)
 
 ### 4. State With `useState`
 
-`useState` returns the current state and a setter:
+`useState` returns the current state and a setter function:
 
 ```jsx
 const [count, setCount] = React.useState(0);
 ```
 
-Calling the setter schedules a re-render. State is a snapshot for the current render; it does not change synchronously inside the same event handler.
+**✦ Key Behaviors:**
 
-When the next state depends on the previous state, use the functional updater:
+1. **Setter schedules re-render** - doesn't update synchronously
+2. **State is a snapshot** - value is fixed during render/event handler
+3. **Closures capture values** - event handlers see their render's state
+
+**Problem Example:**
 
 ```jsx
-setCount((previousCount) => previousCount + 1);
-setCount((previousCount) => previousCount + 1);
-setCount((previousCount) => previousCount + 1);
+function handleClick() {
+  setCount(count + 1);
+  setCount(count + 1);
+  setCount(count + 1);
+  // All three use same render snapshot → count only increments by 1, not 3
+}
 ```
 
-This is why the repeated-update comparison in [app2.js](app2.js) matters. Repeating `setCount(count + 1)` uses the same render snapshot, while functional updates are queued from the latest pending value.
-
-For object state, replace the object instead of mutating it:
+**Solution: Functional Updater**
 
 ```jsx
-setCounter((previousCounter) => ({
-  ...previousCounter,
-  total: previousCounter.total + 1,
+function handleClick() {
+  setCount((prev) => prev + 1);
+  setCount((prev) => prev + 1);
+  setCount((prev) => prev + 1);
+  // Queued → count increments by 3
+}
+```
+
+**Object State (Must be Immutable):**
+
+```jsx
+// ✓ DO THIS - Create new object
+setCounter((prev) => ({
+  ...prev,
+  count: prev.count + 1,
 }));
+
+// ✗ DON'T DO THIS - Direct mutation
+counter.count += 1;
+setCounter(counter); // Same reference → React won't detect change
 ```
 
-Do not do this:
+**Why Immutability?**
 
-```jsx
-counter.total += 1;
-setCounter(counter);
-```
+- React uses reference equality (`===`) to detect changes
+- Mutation doesn't change the reference
+- Can cause stale/inconsistent UI, skipped renders
 
-The reference did not change, and mutation can produce stale or inconsistent UI. Some early examples in this folder copy the array but mutate the object inside it. They are useful for spotting the problem, but the immutable version above is the preferred pattern.
+Examples: [app2.js](app2.js), [app3.js](app3.js)
 
 ### 5. State Preservation, Position, and Keys
 
 React associates state with a component's position in the rendered tree. [app3.js](app3.js) demonstrates mounting, unmounting, and swapping counters.
+
+**✦ Interview Focus: Keys in Lists**
 
 Keys tell React which item is which when rendering a list:
 
@@ -123,69 +309,121 @@ Keys tell React which item is which when rendering a list:
 }
 ```
 
-Interview points:
+**Key Rules:**
 
-- A key must be stable and unique among siblings.
-- Prefer a database or domain id over an array index.
-- Changing a key can intentionally reset a component's state.
-- `key` is used by React and is not passed to the component as a normal prop.
+- ✓ Must be stable and unique among siblings
+- ✓ Prefer database/domain id over array index
+- ✓ Changing a key intentionally resets component state
+- ✗ `key` is NOT passed to the component as a prop
 
-The progression from index keys to stable ids appears in [useContext_context/app.js](useContext_context/app.js), [use_id_key/app.js](use_id_key/app.js), and the memoization examples.
+**`useId` vs Keys:**
 
-`useId` creates stable identifiers for accessibility relationships and server/client consistency. It is not a replacement for list keys and should not be used as a data id.
+- `useId`: Creates stable identifiers for accessibility and form labels
+- **NOT** a replacement for list keys
+- **NOT** suitable as a data id
+
+Examples: [useContext_context/app.js](useContext_context/app.js), [use_id_key/app.js](use_id_key/app.js)
 
 ### 6. Effects and Cleanup With `useEffect`
 
-Effects synchronize React with an external system: the document title, timers, subscriptions, network requests, or DOM APIs.
+**Purpose:** Synchronize React component with an external system (DOM, API, browser APIs, etc.)
 
 ```jsx
 React.useEffect(() => {
+  // Setup code runs here
   document.title = `Clicks: ${count}`;
 
   return () => {
-    // Undo the external effect when dependencies change or the component unmounts.
+    // Cleanup runs before re-run or unmount
+    document.title = "Original Title";
   };
-}, [count]);
+}, [count]); // Dependencies
 ```
 
-Dependency behavior:
+**✦ Dependency Array Patterns:**
 
-- No dependency array: runs after every render.
-- `[]`: runs after mount, with cleanup on unmount.
-- `[value]`: runs after mount and when `value` changes.
+| Array         | Runs         | When                                  |
+| ------------- | ------------ | ------------------------------------- |
+| `[count, id]` | After render | When count or id changes              |
+| `[]`          | Once         | On mount only, cleanup on unmount     |
+| No array      | Every render | After every render (⚠️ use carefully) |
+| Omitted       | Every render | Same as no array                      |
 
-Examples:
+**Common Cleanup Scenarios:**
 
-- Document title updates: [app2.js](app2.js), [app3.js](app3.js), and [custom_hooks/app.js](custom_hooks/app.js).
-- Timer setup and cleanup: [app5.js](app5.js).
-- Focus and DOM interaction: [app6.js](app6.js).
-- Component unmount cleanup: [app3.js](app3.js).
+```jsx
+// Cancel subscriptions
+useEffect(() => {
+  const unsubscribe = subscribe();
+  return () => unsubscribe(); // Cleanup
+}, []);
 
-Effects do not make rendering asynchronous, and they should not be used for values that can be calculated directly during render.
+// Abort fetch
+useEffect(() => {
+  const abort = new AbortController();
+  fetch(url, { signal: abort.signal });
+  return () => abort.abort(); // Cleanup
+}, [url]);
+
+// Clear timers
+useEffect(() => {
+  const timer = setTimeout(() => {}, 1000);
+  return () => clearTimeout(timer); // Cleanup
+}, []);
+```
+
+**⚠️ Common Mistakes:**
+
+- Missing dependencies → stale values, infinite loops
+- Not cleaning up → memory leaks, multiple listeners
+- Doing calculations only in effects → should be in render
+
+Examples: [app2.js](app2.js), [app3.js](app3.js), [app5.js](app5.js), [app6.js](app6.js), [custom_hooks/app.js](custom_hooks/app.js)
 
 ### 7. Async Effects and Race Conditions
 
-[app4.js](app4.js) changes the selected person and fetches a bio. The cleanup sets an `ignore` flag so an older, slower request cannot overwrite the result for a newer selection.
+**Problem:** When state changes trigger new API calls, older slower requests can overwrite newer results.
 
-The general shape is:
+**Example:** User selects person A → fetches → person A data loads (fast), but then selects person B → fetches → person A response arrives last and overwrites person B data.
+
+[app4.js](app4.js) demonstrates the solution.
+
+**Solution: Ignore Flag Pattern**
 
 ```jsx
 React.useEffect(() => {
   let ignore = false;
 
   loadData(id).then((data) => {
-    if (!ignore) setData(data);
+    if (!ignore) setData(data); // Only update if still relevant
   });
 
   return () => {
-    ignore = true;
+    ignore = true; // Cancel old requests when id changes
   };
 }, [id]);
 ```
 
-For production network code, also consider `AbortController`, loading and error states, retries, caching, and a data-fetching library when the application needs them.
+**Modern Alternatives:**
 
-The React 19 [sandbox/index.html](sandbox/index.html) explores `use()` with a cached promise and `<Suspense fallback={...}>`. Suspense handles the pending rendering state, while caching prevents a new promise from being created on every render.
+- `AbortController`: Cancel fetch requests directly
+- Loading/error states: Show feedback to user
+- Retries & caching: Handle failures gracefully
+- Data fetching library: `React Query`, `SWR` (production apps)
+
+**React 19 Approach:**
+
+```jsx
+// With Suspense + use()
+<Suspense fallback={<Loading />}>
+  <BioComponent person={person} />
+</Suspense>;
+
+// Inside component:
+const bio = use(fetchBio(person)); // Cached promise
+```
+
+See: [app4.js](app4.js), [sandbox/index.html](sandbox/index.html)
 
 ### 8. `useRef`, DOM References, and React 19 Refs
 
@@ -212,33 +450,58 @@ Use state when the value belongs in the UI. Do not use refs as a hidden replacem
 
 A custom hook extracts reusable stateful behavior. Its name starts with `use` and it may call other hooks.
 
-- `useCounter` owns counter state and exposes an increment operation.
-- `useDocumentTitle` synchronizes the browser title and restores the original title in cleanup.
+Examples:
 
-Both are shown in [custom_hooks/app.js](custom_hooks/app.js). Custom hooks share logic, not state: every component calling `useCounter()` receives its own independent state.
+- `useCounter` owns counter state and exposes an increment operation
+- `useDocumentTitle` synchronizes the browser title and restores it in cleanup
 
-Rules of Hooks:
+Both shown in [custom_hooks/app.js](custom_hooks/app.js).
 
-- Call hooks only at the top level of a component or custom hook.
-- Do not call hooks inside loops, conditions, nested functions, or event handlers.
-- Call hooks only from React components or custom hooks.
-- Keep hook call order stable across renders.
+**✦ Important:** Custom hooks share logic, not state. Every component calling `useCounter()` gets its own independent state.
+
+**Rules of Hooks (ESLint enforces these):**
+
+| Rule                       | ✓ Do                                | ✗ Don't                                |
+| -------------------------- | ----------------------------------- | -------------------------------------- |
+| **Top level only**         | Call at top of component            | In loops, conditions, nested functions |
+| **React components/hooks** | Call from component/custom hook     | Call from regular JS functions         |
+| **Consistent order**       | Same hooks, same order every render | Conditional hook calls                 |
+
+Violating these causes: "Rendered fewer hooks than expected" or "Rendered more hooks" errors.
 
 ### 10. Props Drilling and Context
 
-Props drilling means passing data through components that do not use it only to reach a deeper child. [useContext_context/app.js](useContext_context/app.js) first shows this pattern and then [useContext_context/context.js](useContext_context/context.js) replaces it with Context.
+**Problem: Props Drilling** - Passing data through components that don't use it just to reach a deeper child.
+
+See example before/after in [useContext_context/app.js](useContext_context/app.js).
+
+**Solution: Context**
 
 Context steps:
 
-1. Create a context with `React.createContext(defaultValue)`.
-2. Provide a value above the consumers.
-3. Read it with `React.useContext(Context)`.
+1. Create: `React.createContext(defaultValue)`
+2. Provide: Wrap tree with `<ContextProvider value={{data}}>`
+3. Consume: `const value = React.useContext(Context)`
 
-Context is useful for values needed by many distant components, such as a theme, current user, locale, or shared application state. It is not automatically a state manager, and every consumer can re-render when the provider value changes.
+**✦ Interview Focus: When to use Context**
 
-For larger state, separate state and dispatch contexts. [usecontextAndusereducer/app.js](usecontextAndusereducer/app.js) demonstrates this structure with counter and tab contexts.
+✓ Good for:
 
-Keep provider values stable where appropriate and split contexts by concern to reduce unnecessary re-renders.
+- Theme, current user, locale, app-wide settings
+- Reducing prop drilling for many distant components
+
+✗ Not ideal for:
+
+- Frequently changing values (causes re-renders)
+- Always use as state manager (consider Redux/Zustand for complex state)
+
+**Performance Optimization:**
+
+- Separate state and dispatch contexts to reduce re-renders
+- Keep provider value stable with `useMemo`
+- Split contexts by concern (auth, theme, notifications)
+
+Example: [usecontextAndusereducer/app.js](usecontextAndusereducer/app.js) uses split state/dispatch contexts with reducers
 
 ### 11. Reducers and Predictable State Transitions
 
@@ -258,33 +521,56 @@ const [state, dispatch] = React.useReducer(reducer, 0);
 dispatch({ type: "increment" });
 ```
 
-Reducers should be pure:
+**✦ Reducer Rules (must be PURE):**
 
-- Do not mutate the existing state.
-- Do not perform network requests or DOM work.
-- Return the same state when an action changes nothing.
-- Make actions describe events, not direct setter instructions.
+| ✓ Do                                 | ✗ Don't                          |
+| ------------------------------------ | -------------------------------- |
+| Return new state object              | Mutate the existing state        |
+| Calculate based on action            | Perform side effects (API calls) |
+| Return same state if nothing changes | Depend on external data          |
+| Describe events in actions           | Use actions as direct setters    |
 
-The JavaScript reducer fundamentals are in [reducers.js](reducers.js). React examples are in [app2.js](app2.js) and [usecontextAndusereducer/app.js](usecontextAndusereducer/app.js). The combined Context and reducer pattern is a useful small-scale alternative to prop drilling.
+Example action naming:
+
+- ✓ `{ type: "USER_LOGGED_IN", payload: user }`
+- ✓ `{ type: "ITEM_DELETED", id: 42 }`
+- ✗ `{ type: "setName", value: "John" }` (sounds like a setter)
+
+**When to use Reducer:**
+
+- Complex state with multiple related values
+- State depends on previous state
+- Many components need to dispatch same actions
+- Pair with Context for global state
+
+Examples: [reducers.js](reducers.js), [app2.js](app2.js), [usecontextAndusereducer/app.js](usecontextAndusereducer/app.js)
 
 ### 12. Derived Data, `memo`, `useMemo`, and `useCallback`
 
-Derived data should normally be calculated from props and state during render. Memoization is an optimization, not a correctness requirement.
+**✦ Interview Focus: When to Optimize**
 
-- `React.memo(Component)` can skip a child render when its props are shallowly equal.
-- `React.useMemo(() => value, dependencies)` caches a calculated value.
-- `React.useCallback(() => ..., dependencies)` caches a function identity.
+Derived data should normally be calculated from props and state during render. **Memoization is an optimization, not a correctness requirement.**
 
-The examples are in [memo/app.js](memo/app.js), [usememo/app.js](usememo/app.js), and [usecallback/app.js](usecallback/app.js). [memo/memoize.js](memo/memoize.js) demonstrates the general memoization idea outside React.
+**Memoization Tools:**
 
-A memoized child still re-renders when:
+| Tool            | Purpose                                           | When to Use                            |
+| --------------- | ------------------------------------------------- | -------------------------------------- |
+| `React.memo()`  | Skip child re-render if props unchanged (shallow) | Child has expensive render             |
+| `useMemo()`     | Cache expensive calculation result                | Heavy computation (filtering, sorting) |
+| `useCallback()` | Cache function identity across renders            | Passing function to memoized child     |
 
-- Its props change by reference or value.
-- Its own state changes.
-- A consumed context value changes.
-- Its parent passes a new callback or object each render.
+**When a memoized child still re-renders:**
 
-Use the profiler or a measured expensive calculation to justify memoization. Also check dependency arrays carefully. In the study examples, calculations and callbacks are intentionally simplified; production code should include every reactive value they read.
+- Its props changed by reference or value
+- Its own state changed
+- A consumed context value changed
+- Parent passes a new callback/object each render
+
+**Best Practice:** Use React DevTools Profiler to measure first. Premature memoization can slow things down.
+
+Examples: [memo/app.js](memo/app.js), [usememo/app.js](usememo/app.js), [usecallback/app.js](usecallback/app.js)
+
+Reference implementation: [memo/memoize.js](memo/memoize.js) shows general memoization outside React
 
 ### 13. Equality and Immutability
 
@@ -319,14 +605,28 @@ The important React connection is that every render creates a new snapshot. An e
 
 ### 15. React 19 APIs: `use`, Context, Suspense, and Refs
 
-The React 19 files use the `use` API in two different ways:
+**✦ Interview Focus: `use()` vs `useEffect()`**
 
-- [use_context/index.html](use_context/index.html) uses `use(CounterContext)` to read Context. This is the React 19 alternative syntax to `useContext(CounterContext)` in the other examples.
-- [react_19_combined_useReducer_useContext/index.html](react_19_combined_useReducer_useContext/index.html) combines `use(Context)` with `useReducer`, split state/dispatch contexts, stable keys, `useMemo`, and `useCallback`.
-- [sandbox/index.html](sandbox/index.html) uses `use(fetchBio(person))` to read a cached promise and `<Suspense>` to show a fallback while it is pending.
-- [ref_as_props/index.html](ref_as_props/index.html) explores passing a ref as a prop in React 19 instead of requiring `forwardRef` in the same way as older React examples.
+The `use()` API in React 19 provides new patterns:
 
-Interview distinction: `use(Context)` reads a resource during rendering, while `useEffect` is used to synchronize with an external system after rendering. `Suspense` does not fetch data by itself; the promise/resource and its cache provide the data behavior.
+| Feature  | use()                        | useEffect()               |
+| -------- | ---------------------------- | ------------------------- |
+| When     | Reads resource during render | Runs after render         |
+| Purpose  | Read Context/promise         | Sync with external system |
+| Suspense | Works with Suspense          | Doesn't pause render      |
+
+**React 19 Examples:**
+
+- **[use_context/](use_context/)** - `use(CounterContext)` instead of `useContext(CounterContext)`
+- **[react_19_combined_useReducer_useContext/](react_19_combined_useReducer_useContext/)** - `use(Context)` + `useReducer`, split state/dispatch contexts, memoization strategies
+- **[sandbox/](sandbox/)** - `use(fetchBio(person))` with cached promise + `<Suspense fallback={...}>` for pending state
+- **[ref_as_props/](ref_as_props/)** - Ref-as-prop pattern (experimental feature in React 19)
+
+**Key Distinction:**
+
+- `use(Context)` reads during rendering → can re-render component
+- `Suspense` pauses rendering while promise pending, shows fallback
+- Promise caching prevents unnecessary re-fetches
 
 ### 16. JavaScript Modules and Data Structures
 
@@ -350,6 +650,56 @@ Interview distinction: `use(Context)` reads a resource during rendering, while `
 - `StrictMode` is a development-only check that can intentionally re-run render/effect-related behavior to expose unsafe side effects. Code should remain correct when this happens.
 
 The Vite template still contains starter content and is separate from the plain HTML examples. The root [index.html](index.html) loads local development React scripts and Babel, while Vite handles JSX and module transformation through its build toolchain.
+
+---
+
+## Interview Preparation Checklist
+
+Before your interview, make sure you can explain:
+
+### Fundamental Concepts
+
+- [ ] Declarative vs Imperative programming
+- [ ] React component lifecycle (mount, update, unmount)
+- [ ] Difference between props and state
+- [ ] How React detects changes (reference equality)
+- [ ] Virtual DOM and reconciliation algorithm
+
+### Hooks & State Management
+
+- [ ] How `useState` works and setter behavior
+- [ ] Why you need functional updaters
+- [ ] `useEffect` dependencies and cleanup
+- [ ] Custom hooks and composition
+- [ ] `useContext` vs Context API
+- [ ] `useReducer` vs `useState` trade-offs
+- [ ] Rules of Hooks (ESLint rules)
+
+### Performance & Optimization
+
+- [ ] When to use `React.memo`, `useMemo`, `useCallback`
+- [ ] How to measure performance (DevTools Profiler)
+- [ ] Re-render causes and prevention
+- [ ] Key best practices in lists
+
+### Advanced Topics
+
+- [ ] Handling async data fetching and race conditions
+- [ ] Stale closures and capturing values
+- [ ] Immutability patterns in React
+- [ ] Component composition vs inheritance
+- [ ] React 19 `use()` and Suspense patterns
+
+### Can You Code?
+
+- [ ] Build a component with useState and useEffect
+- [ ] Create a custom hook
+- [ ] Use Context without prop drilling
+- [ ] Implement a reducer for complex state
+- [ ] Handle form inputs and validation
+- [ ] Prevent race conditions in effects
+
+---
 
 ## Complete File Map
 
