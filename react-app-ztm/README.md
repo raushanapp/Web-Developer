@@ -1,57 +1,48 @@
-# React + TypeScript + Vite
+# RoboFriends
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+RoboFriends is a React + TypeScript app built with Vite that fetches a list of users from JSONPlaceholder and displays them as robot-themed cards. The app includes live search, a loading state, and reusable UI components for a clean directory-style interface.
 
-Currently, two official plugins are available:
+## Latest update
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This project has been updated to reflect the current implementation of the app rather than the default Vite starter template. It now documents the real app behavior, including:
 
-## React Compiler
+- fetching user data on mount
+- filtering results from the search box
+- showing a loading screen before the data loads
+- using reusable card, scroll, and search components
+- building the app with React 19, TypeScript, and Vite
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- Fetches user data from the JSONPlaceholder API
+- Displays a loading state while data is being fetched
+- Filters users in real time by name
+- Renders each user as a RoboHash-styled profile card
+- Shows name and email details in a card list layout
+- Uses reusable React components for search and scrolling
+- Written in TypeScript for safer component props and state handling
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech stack
 
-````js
-export default defineConfig([
-  # RoboFriends
+- React 19
+- TypeScript
+- Vite
+- ESLint
+- JSONPlaceholder API
+- RoboHash avatars
 
-  RoboFriends is a small React and TypeScript directory app built with Vite. It loads a collection of users and presents them as robot-themed profile cards. The project is part of a web development course and demonstrates React class components, state, lifecycle methods, reusable components, and live filtering.
+## Getting started
 
-  ## Features
+### Prerequisites
 
-  - Fetches user data from the JSONPlaceholder API when the app starts
-  - Shows a loading state while the data is being requested
-  - Filters users instantly by name through the search field
-  - Displays each user's generated RoboHash image, name, and email address
-  - Renders cards through reusable `Card` and `CardList` components
-  - Provides a scrollable results area for the card collection
-  - Uses TypeScript for component props and application state
+- Node.js
+- pnpm
 
-  ## Tech Stack
+### Installation
 
-  - React 19
-  - TypeScript
-  - Vite
-  - ESLint
-  - JSONPlaceholder for user data
-  - RoboHash for robot images
-
-  ## Getting Started
-
-  ### Prerequisites
-
-  - Node.js installed locally
-  - pnpm installed locally
-
-  ### Installation
-
-  ```bash
-  pnpm install
-````
+```bash
+pnpm install
+```
 
 ### Run the development server
 
@@ -59,27 +50,35 @@ export default defineConfig([
 pnpm dev
 ```
 
-Vite will print the local URL in the terminal. Open that URL in a browser to use the app.
+Then open the local URL shown in the terminal in your browser.
 
-## Available Scripts
+## Available scripts
 
-| Command        | Description                                                    |
-| -------------- | -------------------------------------------------------------- |
-| `pnpm dev`     | Starts the Vite development server with hot module replacement |
-| `pnpm build`   | Type-checks the project and creates a production build         |
-| `pnpm lint`    | Runs ESLint across the project                                 |
-| `pnpm preview` | Serves the production build locally                            |
+| Command        | Description                            |
+| -------------- | -------------------------------------- |
+| `pnpm dev`     | Starts the Vite development server     |
+| `pnpm build`   | Creates a production build for the app |
+| `pnpm lint`    | Runs ESLint on the project             |
+| `pnpm preview` | Serves the production build locally    |
 
-## Data Sources
+## Data source
 
-User data is requested from [`jsonplaceholder.typicode.com/users`](https://jsonplaceholder.typicode.com/users). Robot avatars are generated using the user's ID with [RoboHash](https://robohash.org/). The app therefore needs an internet connection to load the user list and avatar images.
+User records are loaded from JSONPlaceholder at `https://jsonplaceholder.typicode.com/users`, and each user's avatar is created using their ID with RoboHash.
 
-## Project Structure
+## Project structure
 
 ```text
 src/
-  components/  Reusable search, card, and scroll components
-  data/        Local robot data used for TypeScript typing
-  pages/       Card list page component
-  App.tsx      Application state, data fetching, and filtering
+  App.tsx         Main app logic, data fetching, and filtering
+  components/     Search, scroll, and card elements
+  data/           Local data and TypeScript model support
+  pages/          Card list page rendering
+  assets/         Static project assets
+  hooks/          Custom React hooks
+  store/          Redux-related action and reducer files
+  styles/         Component styling files
 ```
+
+## Notes
+
+This project is part of a web development learning exercise and demonstrates core React concepts such as state management, component composition, API calls, and real-time user filtering.
