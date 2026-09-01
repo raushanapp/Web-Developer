@@ -27,6 +27,134 @@ Use this guide to study React concepts, practice implementations, and prepare fo
 
 ---
 
+## Visual Diagrams: React Core Concepts
+
+### React Rendering Cycle
+
+```mermaid
+graph LR
+    A["User Event<br/>or State Change"] --> B["Component<br/>Function Runs"]
+    B --> C["New JSX<br/>Created"]
+    C --> D["React Compares<br/>Old vs New Tree"]
+    D --> E{"Changes<br/>Found?"}
+    E -->|Yes| F["Update DOM<br/>Efficiently"]
+    E -->|No| G["Skip Update"]
+    F --> H["Browser<br/>Renders"]
+    G --> H
+    H --> I["User Sees<br/>Result"]
+```
+
+### Component Lifecycle with useEffect
+
+```mermaid
+graph TD
+    A["Component Mounts"] --> B["Render"]
+    B --> C["Effects Run"]
+    C --> D["User Sees UI"]
+    D --> E{"State Changes?"}
+    E -->|Yes| F["Re-render"]
+    F --> C
+    E -->|No| G["Wait for Event"]
+    G --> E
+    H["Component Unmounts"] --> I["Cleanup Functions Run"]
+    E -->|Unmount| H
+```
+
+### useState: Synchronous vs Asynchronous
+
+```mermaid
+graph LR
+    A["setCount Called"] --> B["State Update<br/>Scheduled"]
+    B --> C["Component<br/>Re-renders"]
+    C --> D["Same Event Handler<br/>Sees Old Value"]
+    E["After Handler Ends"] --> F["New State<br/>Available"]
+
+    style D fill:#ff9999
+    style F fill:#99ff99
+```
+
+### Props Drilling vs Context
+
+```mermaid
+graph TD
+    subgraph "Without Context (Props Drilling)"
+        A1["App"] --> B1["Parent"]
+        B1 --> C1["Child"]
+        C1 --> D1["Grandchild<br/>needs value"]
+        A1 -->|Pass prop| B1
+        B1 -->|Pass prop| C1
+        C1 -->|Pass prop| D1
+    end
+
+    subgraph "With Context (Cleaner)"
+        A2["App<br/>Provider"]
+        B2["Parent"]
+        C2["Child"]
+        D2["Grandchild<br/>useContext"]
+        A2 -.->|value| D2
+        B2 -.->|no prop needed| C2
+    end
+```
+
+### useEffect Dependencies Flow
+
+```mermaid
+graph LR
+    A["Component Renders"] --> B{"Dependencies<br/>Changed?"}
+    B -->|No array| C["Effect Runs<br/>Every Render"]
+    B -->|Empty []| D["Effect Runs<br/>Once on Mount"]
+    B -->|[dep1, dep2]| E{"Values<br/>Changed?"}
+    E -->|Yes| F["Effect Runs"]
+    E -->|No| G["Effect Skipped"]
+    F --> H["Cleanup Runs<br/>Before Next"]
+    C --> H
+    D --> I["Cleanup Runs<br/>on Unmount"]
+```
+
+### Async Effect Race Condition
+
+```mermaid
+graph LR
+    A["User Selects<br/>Item A"] --> B["API Request A<br/>Sent"]
+    C["User Selects<br/>Item B"] --> D["API Request B<br/>Sent"]
+    D --> E["Response B<br/>Arrives Fast"]
+    B --> F["Response A<br/>Arrives Late"]
+
+    F -->|Without Cleanup| G["❌ Shows A Data<br/>Wrong!"]
+    F -->|With Cleanup| H["✓ Ignored<br/>Correct!"]
+    E --> I["Shows B Data"]
+
+    style G fill:#ff9999
+    style H fill:#99ff99
+```
+
+### Reducer Flow
+
+```mermaid
+graph LR
+    A["Component"] --> B["dispatch<br/>action"]
+    B --> C["Reducer Function<br/>state + action"]
+    C --> D{"Determine<br/>Next State"}
+    D --> E["Return New<br/>State"]
+    E --> F["Component<br/>Re-renders"]
+    F --> G["UI Updates"]
+```
+
+### React.memo Prevention of Re-renders
+
+```mermaid
+graph TD
+    A["Parent Changes"] --> B{"Child Props<br/>Changed?"}
+    B -->|Reference Equal| C["✓ Skip Child<br/>Render"]
+    B -->|Different Ref| D["Render Child<br/>Anyway"]
+    C --> E["Child Memoized"]
+    D --> F["Check memo<br/>Props Equal"]
+    style C fill:#99ff99
+    style D fill:#ffcc99
+```
+
+---
+
 ## How To Run The Examples
 
 1. Open [index.html](index.html) with a local server, such as VS Code Live Server.
@@ -251,6 +379,33 @@ const [count, setCount] = React.useState(0);
 2. **State is a snapshot** - value is fixed during render/event handler
 3. **Closures capture values** - event handlers see their render's state
 
+**State Snapshot vs Functional Updater:**
+
+```mermaid
+graph TD
+    subgraph "Problem: Using count directly"
+        A1["count = 0"] --> B1["handleClick()"]
+        B1 --> C1["setCount(count + 1)"]
+        B1 --> D1["setCount(count + 1)"]
+        B1 --> E1["setCount(count + 1)"]
+        C1 --> F1["All queue: 0 + 1"]
+        D1 --> F1
+        E1 --> F1
+        F1 --> G1["Result: count = 1 ❌"]
+    end
+
+    subgraph "Solution: Functional updater"
+        A2["count = 0"] --> B2["handleClick()"]
+        B2 --> C2["setCount(p => p + 1)"]
+        C2 -->|Queue: 0+1=1| D2["setCount(p => p + 1)"]
+        D2 -->|Queue: 1+1=2| E2["setCount(p => p + 1)"]
+        E2 -->|Queue: 2+1=3| F2["Result: count = 3 ✓"]
+    end
+
+    style G1 fill:#ff9999
+    style F2 fill:#99ff99
+```
+
 **Problem Example:**
 
 ```jsx
@@ -271,6 +426,40 @@ function handleClick() {
   setCount((prev) => prev + 1);
   // Queued → count increments by 3
 }
+```
+
+**Object State Immutability:**
+
+```mermaid
+graph LR
+    A["State Object"] --> B{"Update count"}
+
+    subgraph "❌ Wrong - Mutation"
+        C1["state.count++"]
+        C2["setCounter(state)"]
+        C3["Same Reference"]
+        C4["React: No Change!"]
+    end
+
+    subgraph "✓ Right - Immutable"
+        D1["Create New Object"]
+        D2["{...state, count: state.count+1}"]
+        D3["Different Reference"]
+        D4["React: Update!"]
+    end
+
+    B -->|Direct mutation| C1
+    C1 --> C2
+    C2 --> C3
+    C3 --> C4
+
+    B -->|Spread operator| D1
+    D1 --> D2
+    D2 --> D3
+    D3 --> D4
+
+    style C4 fill:#ff9999
+    style D4 fill:#99ff99
 ```
 
 **Object State (Must be Immutable):**
@@ -469,6 +658,37 @@ Both shown in [custom_hooks/app.js](custom_hooks/app.js).
 
 Violating these causes: "Rendered fewer hooks than expected" or "Rendered more hooks" errors.
 
+**Hooks Rules Visualization:**
+
+```mermaid
+graph TD
+    subgraph "✓ CORRECT - Top Level"
+        A1["function Counter()"]
+        A1 --> B1["useState"]
+        A1 --> C1["useEffect"]
+        A1 --> D1["JSX"]
+    end
+
+    subgraph "❌ WRONG - In Condition"
+        A2["function Counter()"]
+        A2 --> B2{"if (show)"}
+        B2 --> C2["useState"]
+        C2 -.-> D2["Inconsistent Hook Order!"]
+    end
+
+    subgraph "❌ WRONG - In Loop"
+        A3["function Counter()"]
+        A3 --> B3["for (let i)"]
+        B3 --> C3["useEffect"]
+        C3 -.-> D3["Can't guarantee order"]
+    end
+
+    style B1 fill:#c8e6c9
+    style C1 fill:#c8e6c9
+    style D2 fill:#ff9999
+    style D3 fill:#ff9999
+```
+
 ### 10. Props Drilling and Context
 
 **Problem: Props Drilling** - Passing data through components that don't use it just to reach a deeper child.
@@ -494,6 +714,45 @@ Context steps:
 
 - Frequently changing values (causes re-renders)
 - Always use as state manager (consider Redux/Zustand for complex state)
+
+**Context Implementation Flow:**
+
+```mermaid
+graph TD
+    A["Create Context<br/>const UserContext = createContext()"]
+    B["Provide Value<br/>&lt;UserContext.Provider value={user}&gt;"]
+    C["Wrap Components<br/>&lt;App /&gt;<br/>&lt;/Provider&gt;"]
+    D["Consume in Child<br/>const user = useContext(UserContext)"]
+
+    A --> B
+    B --> C
+    C --> D
+
+    style A fill:#bbdefb
+    style B fill:#c5e1a5
+    style C fill:#f8bbd0
+    style D fill:#d1c4e9
+```
+
+**Props Drilling vs Context Performance:**
+
+```mermaid
+graph LR
+    subgraph "Props Drilling"
+        A1["App<br/>user={user}"] -->|Passes prop| B1["Layout<br/>user={user}"]
+        B1 -->|Passes prop| C1["Sidebar<br/>user={user}"]
+        C1 -->|Passes prop| D1["Profile<br/>Uses user"]
+    end
+
+    subgraph "Context"
+        A2["App<br/>Provider"]
+        B2["Layout"]
+        C2["Sidebar"]
+        D2["Profile<br/>useContext"]
+        A2 -.->|value| D2
+        B2 -.->|No prop| C2
+    end
+```
 
 **Performance Optimization:**
 
