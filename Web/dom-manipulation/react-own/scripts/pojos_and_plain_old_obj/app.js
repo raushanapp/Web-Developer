@@ -25,6 +25,7 @@ let markup = {
         {
           type: "text",
           value: "Counter",
+          // events
         },
         {
           type: "strong",
@@ -67,7 +68,7 @@ console.log(main);
 function addElements(pojoElement, parentDOMNode) {
   let newDOMNode =
     pojoElement.type === "text"
-      ? document.createTextNode(parentDOMNode.value)
+      ? document.createTextNode(pojoElement.value)
       : document.createElement(pojoElement.type);
 
   if (pojoElement.children) {
