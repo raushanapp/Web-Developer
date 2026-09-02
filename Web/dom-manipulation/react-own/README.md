@@ -168,14 +168,28 @@ The current default entry point loads `es_modules/app.js`, which demonstrates a 
 
 ### Exercise revisit note
 
-The [exercise_revisit](exercise_revisit/) folder is a small React refresher that compares plain rendering with component-based structure.
+The [exercise_revisit](exercise_revisit/) folder is a small React refresher that compares plain rendering with component-based structure and shows how React virtual elements map to real DOM updates.
 
-- [exercise_revisit/index.html](exercise_revisit/index.html) is the entry page and currently loads the local React files plus [exercise_revisit/react_components/app.js](exercise_revisit/react_components/app.js).
-- [exercise_revisit/basic_way/app.js](exercise_revisit/basic_way/app.js) shows the simplest way to render a component without splitting the UI into multiple pieces.
+```mermaid
+graph TD
+    A[exercise_revisit/] --> B[index.html]
+    A --> C[basic_way/app.js]
+    A --> D[jsx/app.js]
+    A --> E[react_components/app.js]
+    A --> F[fiber_and_reconciliation/app.js]
+    A --> G[scripts/]
+    G --> H[react.development.js]
+    G --> I[react-dom.development.js]
+```
+
+- [exercise_revisit/index.html](exercise_revisit/index.html) is the entry page and currently loads [exercise_revisit/fiber_and_reconciliation/app.js](exercise_revisit/fiber_and_reconciliation/app.js) via the `<script type="text/babel">` tag.
+- [exercise_revisit/basic_way/app.js](exercise_revisit/basic_way/app.js) shows the most direct pattern: render a single `App` function with `React.createElement`, then inspect the DOM before and after React runs.
 - [exercise_revisit/react_components/app.js](exercise_revisit/react_components/app.js) demonstrates a nested component pattern with an `App` wrapper and reusable `Counter` component.
+- [exercise_revisit/jsx/app.js](exercise_revisit/jsx/app.js) rewrites the same idea using JSX syntax instead of raw `React.createElement`, making the structure easier to read.
+- [exercise_revisit/fiber_and_reconciliation/app.js](exercise_revisit/fiber_and_reconciliation/app.js) introduces the reconciliation idea: a React tree with `CounterOne` and `CounterTwo`, and a conditional toggle between them using `counterName`.
 - [exercise_revisit/scripts/react.development.js](exercise_revisit/scripts/react.development.js) and [exercise_revisit/scripts/react-dom.development.js](exercise_revisit/scripts/react-dom.development.js) are the local React runtime files used by this exercise.
 
-This folder is useful for understanding how React elements, DOM nodes, and component composition relate to each other before moving into hooks and state management.
+This folder is useful for understanding how React elements, DOM nodes, and component composition relate to each other before moving into hooks and state management. It also makes the idea of reconciliation easier to see: React compares the old tree and the new tree, then updates only the parts that changed.
 
 ---
 
@@ -925,6 +939,57 @@ The `use()` API in React 19 provides new patterns:
 [es_modules/app.js](es_modules/app.js) and [es_modules/other_code.js](es_modules/other_code.js) demonstrate `import` and `export` with a native module script.
 
 [linked_list_data_structure.js](linked_list_data_structure.js) and [queue_data_structure.js](queue_data_structure.js) cover linked-list nodes, head/tail references, append, traversal, and queue FIFO behavior. These are JavaScript fundamentals that support interview preparation and help explain why React state updates should preserve object identity intentionally.
+
+#### Linked list note: node → next pointer chain
+
+The example in [linked_list_data_structure.js](linked_list_data_structure.js) models a linked list as a sequence of nodes. Each node stores a value and a reference to the next node. The list keeps a `head` and `tail` pointer so appending to the end is efficient while traversal still happens by following `next` references.
+
+```js
+class LinkedListNode {
+  constructor(val, next = null) {
+    this.value = val;
+    this.next = next;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  append(val) {
+    const newNode = new LinkedListNode(val);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+      return this;
+    }
+
+    this.tail.next = newNode;
+    this.tail = newNode;
+    return this;
+  }
+
+  print() {
+    let currentNode = this.head;
+    while (currentNode) {
+      console.log(currentNode.value);
+      currentNode = currentNode.next;
+    }
+  }
+}
+```
+
+This is the actual structure being created by the file:
+
+```mermaid
+graph LR
+    A[head] --> B["Tony"] --> C["Mayur"] --> D["Alice"] --> E["Understanding React"] --> F[tail]
+```
+
+The important idea is that a linked list does not use index-based access like an array. Instead, each node points to the next one, so traversal starts at `head` and moves until `null` is reached.
 
 ### 17. Vite, Strict Mode, and Hot Module Replacement
 

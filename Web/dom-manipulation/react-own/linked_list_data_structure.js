@@ -1,5 +1,4 @@
 //  Linked list
-
 class LinkedListNode {
   constructor(val, next = null) {
     this.value = val;
