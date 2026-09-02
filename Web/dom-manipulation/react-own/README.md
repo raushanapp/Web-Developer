@@ -103,7 +103,7 @@ graph LR
     A["Component Renders"] --> B{"Dependencies<br/>Changed?"}
     B -->|No array| C["Effect Runs<br/>Every Render"]
     B -->|Empty []| D["Effect Runs<br/>Once on Mount"]
-    B -->|[dep1, dep2]| E{"Values<br/>Changed?"}
+    B -->|"[dep1, dep2]"| E{"Values<br/>Changed?"}
     E -->|Yes| F["Effect Runs"]
     E -->|No| G["Effect Skipped"]
     F --> H["Cleanup Runs<br/>Before Next"]
