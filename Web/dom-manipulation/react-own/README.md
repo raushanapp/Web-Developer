@@ -100,15 +100,15 @@ graph TD
 
 ```mermaid
 graph LR
-    A["Component Renders"] --> B{"Dependencies<br/>Changed?"}
-    B -->|No array| C["Effect Runs<br/>Every Render"]
-    B -->|Empty []| D["Effect Runs<br/>Once on Mount"]
-    B -->|"[dep1, dep2]"| E{"Values<br/>Changed?"}
-    E -->|Yes| F["Effect Runs"]
-    E -->|No| G["Effect Skipped"]
-    F --> H["Cleanup Runs<br/>Before Next"]
+    A["Component renders"] --> B{"Dependencies changed?"}
+    B -->|No array| C["Effect runs every render"]
+    B -->|Empty array| D["Effect runs once on mount"]
+    B -->|Dependency list| E{"Values changed?"}
+    E -->|Yes| F["Effect runs"]
+    E -->|No| G["Effect skipped"]
+    F --> H["Cleanup runs before next effect"]
     C --> H
-    D --> I["Cleanup Runs<br/>on Unmount"]
+    D --> I["Cleanup runs on unmount"]
 ```
 
 ### Async Effect Race Condition
