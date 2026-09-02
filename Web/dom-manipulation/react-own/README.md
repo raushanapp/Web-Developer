@@ -818,6 +818,28 @@ Derived data should normally be calculated from props and state during render. *
 | `useMemo()`     | Cache expensive calculation result                | Heavy computation (filtering, sorting) |
 | `useCallback()` | Cache function identity across renders            | Passing function to memoized child     |
 
+**Memoization Decision Tree:**
+
+```mermaid
+graph TD
+    A["Performance Slow?"]
+    A -->|No| B["❌ Don't Optimize<br/>Premature optimization is evil"]
+    A -->|Yes| C["Use React DevTools<br/>Profiler"]
+    C --> D{"What's Slow?"}
+    D -->|Child Render| E["Use React.memo()"]
+    D -->|Calculation| F["Use useMemo()"]
+    D -->|Function Ref| G["Use useCallback()"]
+
+    E --> H["Only if props<br/>rarely change"]
+    F --> I["Only if calc<br/>is expensive"]
+    G --> J["Only if passed<br/>to memoized child"]
+
+    style B fill:#ff9999
+    style H fill:#c8e6c9
+    style I fill:#c8e6c9
+    style J fill:#c8e6c9
+```
+
 **When a memoized child still re-renders:**
 
 - Its props changed by reference or value
