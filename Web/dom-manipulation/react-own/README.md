@@ -166,6 +166,17 @@ graph TD
 
 The current default entry point loads `es_modules/app.js`, which demonstrates a native JavaScript module import rather than a complete React UI.
 
+### Exercise revisit note
+
+The [exercise_revisit](exercise_revisit/) folder is a small React refresher that compares plain rendering with component-based structure.
+
+- [exercise_revisit/index.html](exercise_revisit/index.html) is the entry page and currently loads the local React files plus [exercise_revisit/react_components/app.js](exercise_revisit/react_components/app.js).
+- [exercise_revisit/basic_way/app.js](exercise_revisit/basic_way/app.js) shows the simplest way to render a component without splitting the UI into multiple pieces.
+- [exercise_revisit/react_components/app.js](exercise_revisit/react_components/app.js) demonstrates a nested component pattern with an `App` wrapper and reusable `Counter` component.
+- [exercise_revisit/scripts/react.development.js](exercise_revisit/scripts/react.development.js) and [exercise_revisit/scripts/react-dom.development.js](exercise_revisit/scripts/react-dom.development.js) are the local React runtime files used by this exercise.
+
+This folder is useful for understanding how React elements, DOM nodes, and component composition relate to each other before moving into hooks and state management.
+
 ---
 
 ## Common Interview Questions & Answers
