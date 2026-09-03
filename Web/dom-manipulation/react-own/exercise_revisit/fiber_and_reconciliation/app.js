@@ -3,6 +3,7 @@ const root = ReactDOM.createRoot(rootNode);
 
 console.log(root);
 
+console.dir(rootNode, "DOM ELEMEnt");
 let counterName = "one";
 root.render(React.createElement(App));
 

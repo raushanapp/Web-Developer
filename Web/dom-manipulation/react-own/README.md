@@ -177,9 +177,10 @@ graph TD
     A --> D[jsx/app.js]
     A --> E[react_components/app.js]
     A --> F[fiber_and_reconciliation/app.js]
-    A --> G[scripts/]
-    G --> H[react.development.js]
-    G --> I[react-dom.development.js]
+    A --> G[events/app.js]
+    A --> H[scripts/]
+    H --> I[react.development.js]
+    H --> J[react-dom.development.js]
 ```
 
 - [exercise_revisit/index.html](exercise_revisit/index.html) is the entry page and currently loads [exercise_revisit/fiber_and_reconciliation/app.js](exercise_revisit/fiber_and_reconciliation/app.js) via the `<script type="text/babel">` tag.
@@ -187,7 +188,10 @@ graph TD
 - [exercise_revisit/react_components/app.js](exercise_revisit/react_components/app.js) demonstrates a nested component pattern with an `App` wrapper and reusable `Counter` component.
 - [exercise_revisit/jsx/app.js](exercise_revisit/jsx/app.js) rewrites the same idea using JSX syntax instead of raw `React.createElement`, making the structure easier to read.
 - [exercise_revisit/fiber_and_reconciliation/app.js](exercise_revisit/fiber_and_reconciliation/app.js) introduces the reconciliation idea: a React tree with `CounterOne` and `CounterTwo`, and a conditional toggle between them using `counterName`.
+- [exercise_revisit/events/app.js](exercise_revisit/events/app.js) demonstrates event handling, bubbling, `preventDefault()`, and `stopPropagation()` in a React-style DOM event flow.
 - [exercise_revisit/scripts/react.development.js](exercise_revisit/scripts/react.development.js) and [exercise_revisit/scripts/react-dom.development.js](exercise_revisit/scripts/react-dom.development.js) are the local React runtime files used by this exercise.
+
+The root [index.html](index.html) is also currently wired to the state-focused examples, especially [useState/app.js](useState/app.js), which shows independent counters with `useState`, and [useReducer/app.js](useReducer/app.js), which centralizes updates inside a reducer.
 
 This folder is useful for understanding how React elements, DOM nodes, and component composition relate to each other before moving into hooks and state management. It also makes the idea of reconciliation easier to see: React compares the old tree and the new tree, then updates only the parts that changed.
 
@@ -1078,6 +1082,9 @@ Use this map when revising a particular concept:
 | [shallow_equality_is_object.js](shallow_equality_is_object.js)                                           | Shallow comparison and nested object references                             |
 | [linked_list_data_structure.js](linked_list_data_structure.js)                                           | Linked list nodes, head, tail, append, traversal                            |
 | [queue_data_structure.js](queue_data_structure.js)                                                       | Queue FIFO behavior built on linked nodes                                   |
+| [useState/app.js](useState/app.js)                                                                       | `useState` counter example and local state updates                          |
+| [useReducer/app.js](useReducer/app.js)                                                                   | Reducer-based state transitions and dispatch flow                           |
+| [exercise_revisit/events/app.js](exercise_revisit/events/app.js)                                         | Event bubbling, default prevention, and propagation control                 |
 | [components_design/app.js](components_design/app.js)                                                     | Composition, `children`, custom hooks, props                                |
 | [custom_hooks/app.js](custom_hooks/app.js)                                                               | `useCounter`, `useDocumentTitle`, custom hook rules                         |
 | [useContext_context/app.js](useContext_context/app.js)                                                   | Props drilling                                                              |
