@@ -189,6 +189,8 @@ graph TD
 - [exercise_revisit/jsx/app.js](exercise_revisit/jsx/app.js) rewrites the same idea using JSX syntax instead of raw `React.createElement`, making the structure easier to read.
 - [exercise_revisit/fiber_and_reconciliation/app.js](exercise_revisit/fiber_and_reconciliation/app.js) introduces the reconciliation idea: a React tree with `CounterOne` and `CounterTwo`, and a conditional toggle between them using `counterName`.
 - [exercise_revisit/events/app.js](exercise_revisit/events/app.js) demonstrates event handling, bubbling, `preventDefault()`, and `stopPropagation()` in a React-style DOM event flow.
+- [exercise_revisit/effect_stale_closures/app.js](exercise_revisit/effect_stale_closures/app.js) shows a stale-closure pattern in `useEffect()`: the interval captures the current click count and resets when the dependency changes, helping explain why dependency arrays matter.
+- [exercise_revisit/index.html](exercise_revisit/index.html) is currently pointing at [exercise_revisit/effect_stale_closures/app.js](exercise_revisit/effect_stale_closures/app.js), so the page loads this specific effect demo in the browser.
 - [exercise_revisit/scripts/react.development.js](exercise_revisit/scripts/react.development.js) and [exercise_revisit/scripts/react-dom.development.js](exercise_revisit/scripts/react-dom.development.js) are the local React runtime files used by this exercise.
 
 The root [index.html](index.html) is also currently wired to the state-focused examples, especially [useState/app.js](useState/app.js), which shows independent counters with `useState`, and [useReducer/app.js](useReducer/app.js), which centralizes updates inside a reducer.
