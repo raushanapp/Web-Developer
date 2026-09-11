@@ -4,21 +4,28 @@ import CardList from "./pages/card-list";
 import SearchBox from "./components/search-box";
 import { robots } from "./data";
 import Scroll from "./components/scroll";
+import { connect, type ConnectedProps } from "react-redux";
+import { setSearchField } from "./store/actions";
+import type { RootState } from "./store/store";
 
-// const PROD = import.meta.env.PROD;
+const mapStateToProps = (state: RootState) => {
+  return { searchField: state.roboSearch.search };
+};
 
-class App extends React.Component<
-  object,
-  { robots: typeof robots; searchField: string }
-> {
-  constructor(props: object) {
+const mapDispatchProps = {
+  setSearchField,
+};
+
+const connector = connect(mapStateToProps, mapDispatchProps);
+
+type PropsFormRedux = ConnectedProps<typeof connector>;
+
+class App extends React.Component<PropsFormRedux, { robots: typeof robots }> {
+  constructor(props: PropsFormRedux) {
     super(props);
     this.state = {
       robots: [],
-      searchField: "",
     };
-
-    // console.log("constructor 1"); this run first
   }
 
   componentDidMount(): void {
@@ -26,37 +33,34 @@ class App extends React.Component<
       .then((response) => response.json())
       .then((user) => this.setState({ robots: user }));
     // console.log("componentDidMount 2"); this run third and repaint the items then runs again render
-
-    // if (PROD === "production") {
-    //   console.log("Prod");
-    // }
-    // console.log(PROD, "====serever");
   }
 
   onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchField: e.target.value });
+    this.props.setSearchField(e.target.value);
   };
 
   render() {
-    const { searchField, robots } = this.state;
+    const { robots } = this.state;
+    const { searchField } = this.props;
 
     const filteredRobots = robots.filter((robot) => {
       return robot.name.toLowerCase().includes(searchField.toLowerCase());
     });
-    // console.log("Render 3");  this run second
 
     return !robots.length ? (
       <h1>Loading...</h1>
     ) : (
-      <div className="app">
-        <h1 className="headers">RoboFriends</h1>
+      <section className="app">
+        <header className="headers">
+          <h1>RoboFriends</h1>
+        </header>
         <SearchBox searchChange={this.onSearchChange} />
         <Scroll>
           <CardList robos={filteredRobots} />
         </Scroll>
-      </div>
+      </section>
     );
   }
 }
 
-export default App;
+export default connector(App);

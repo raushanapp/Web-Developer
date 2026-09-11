@@ -7,13 +7,13 @@ const SearchBox = ({
   searchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
-    <div className="search-box">
+    <section className="search-box">
       <input
         type="search"
         placeholder="search robots"
         onChange={searchChange}
       />
-    </div>
+    </section>
   );
 };
 

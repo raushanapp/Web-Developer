@@ -21,7 +21,11 @@ export const searchRobotsReducer = (
 ): InitialStateProps => {
   switch (action.type) {
     case CHANGE_SEARCH_FIELD: {
-      return Object.assign({}, state, { search: action.payload });
+      // return Object.assign({}, state, { search: action.payload });
+      return {
+        ...state,
+        search: action.payload,
+      };
     }
     default:
       return state;

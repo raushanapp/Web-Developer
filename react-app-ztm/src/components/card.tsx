@@ -10,13 +10,13 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ name, email, id }) => {
   return (
-    <div className="card grow">
+    <section className="card grow">
       <img alt="robots" src={`https://robohash.org/${id}?size=200x200`} />
-      <div>
+      <article>
         <h2>Name: {name}</h2>
         <p>Email: {email}</p>
-      </div>
-    </div>
+      </article>
+    </section>
   );
 };
 export default Card;
