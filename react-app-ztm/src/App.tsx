@@ -5,15 +5,21 @@ import SearchBox from "./components/search-box";
 import { robots } from "./data";
 import Scroll from "./components/scroll";
 import { connect, type ConnectedProps } from "react-redux";
-import { setSearchField } from "./store/actions";
+import { setSearchField, requestRobots } from "./store/actions";
 import type { RootState } from "./store/store";
 
 const mapStateToProps = (state: RootState) => {
-  return { searchField: state.roboSearch.search };
+  return {
+    searchField: state.searchRobots.searchField,
+    robots: state.requestRobots.robots,
+    isPending: state.requestRobots.isPending,
+    error: state.requestRobots.error,
+  };
 };
 
 const mapDispatchProps = {
   setSearchField,
+  onRequestRobots: requestRobots,
 };
 
 const connector = connect(mapStateToProps, mapDispatchProps);
@@ -29,10 +35,7 @@ class App extends React.Component<PropsFormRedux, { robots: typeof robots }> {
   }
 
   componentDidMount(): void {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((user) => this.setState({ robots: user }));
-    // console.log("componentDidMount 2"); this run third and repaint the items then runs again render
+    this.props.onRequestRobots();
   }
 
   onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,15 +43,17 @@ class App extends React.Component<PropsFormRedux, { robots: typeof robots }> {
   };
 
   render() {
-    const { robots } = this.state;
-    const { searchField } = this.props;
+    // const { robots } = this.state;
+    const { searchField, robots, isPending, error } = this.props;
 
     const filteredRobots = robots.filter((robot) => {
       return robot.name.toLowerCase().includes(searchField.toLowerCase());
     });
 
-    return !robots.length ? (
+    return isPending ? (
       <h1>Loading...</h1>
+    ) : error ? (
+      <h1>{error}</h1>
     ) : (
       <section className="app">
         <header className="headers">
