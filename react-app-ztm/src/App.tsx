@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import CardList from "./pages/card-list";
 import SearchBox from "./components/search-box";
-import { robots } from "./data";
+// import { robots } from "./data";
 import Scroll from "./components/scroll";
 import { connect, type ConnectedProps } from "react-redux";
 import { setSearchField, requestRobots } from "./store/actions";
@@ -26,14 +26,7 @@ const connector = connect(mapStateToProps, mapDispatchProps);
 
 type PropsFormRedux = ConnectedProps<typeof connector>;
 
-class App extends React.Component<PropsFormRedux, { robots: typeof robots }> {
-  constructor(props: PropsFormRedux) {
-    super(props);
-    this.state = {
-      robots: [],
-    };
-  }
-
+class App extends React.Component<PropsFormRedux> {
   componentDidMount(): void {
     this.props.onRequestRobots();
   }
@@ -43,9 +36,7 @@ class App extends React.Component<PropsFormRedux, { robots: typeof robots }> {
   };
 
   render() {
-    // const { robots } = this.state;
     const { searchField, robots, isPending, error } = this.props;
-
     const filteredRobots = robots.filter((robot) => {
       return robot.name.toLowerCase().includes(searchField.toLowerCase());
     });

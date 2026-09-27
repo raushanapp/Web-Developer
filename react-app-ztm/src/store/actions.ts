@@ -7,7 +7,6 @@ import {
 import type { AppDispatch } from "./store";
 
 export const setSearchField = (text: string) => {
-  // console.log(text);
   return {
     type: CHANGE_SEARCH_FIELD,
     payload: text,
@@ -20,6 +19,6 @@ export const requestRobots = () => async (dispatch: AppDispatch) => {
     .then((response) => response.json())
     .then((data) => dispatch({ type: REQUEST_ROBOTS_SUCCESS, payload: data }))
     .catch((error) =>
-      dispatch({ type: REQUEST_ROBOTS_FAILED, payload: error }),
+      dispatch({ type: REQUEST_ROBOTS_FAILED, payload: error.message }),
     );
 };
