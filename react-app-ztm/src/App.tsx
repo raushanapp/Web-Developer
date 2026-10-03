@@ -2,11 +2,11 @@ import React from "react";
 import "./App.css";
 import CardList from "./pages/card-list";
 import SearchBox from "./components/search-box";
-// import { robots } from "./data";
 import Scroll from "./components/scroll";
 import { connect, type ConnectedProps } from "react-redux";
 import { setSearchField, requestRobots } from "./store/actions";
 import type { RootState } from "./store/store";
+import Header from "./components/header";
 
 const mapStateToProps = (state: RootState) => {
   return {
@@ -47,9 +47,7 @@ class App extends React.Component<PropsFormRedux> {
       <h1>{error}</h1>
     ) : (
       <section className="app">
-        <header className="headers">
-          <h1>RoboFriends</h1>
-        </header>
+        <Header />
         <SearchBox searchChange={this.onSearchChange} />
         <Scroll>
           <CardList robos={filteredRobots} />
